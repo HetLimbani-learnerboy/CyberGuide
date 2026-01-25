@@ -1,0 +1,125 @@
+/* --- MAIN CONTAINER --- */
+.about-page-container {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at top right, #0a1022, #050914, #020408);
+  color: #ffffff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  box-sizing: border-box;
+}
+
+/* --- HEADER --- */
+.about-header h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+}
+
+.guide-text {
+  color: #38bdf8;
+  text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* --- CONTENT SECTIONS --- */
+.about-content {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.about-section {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 35px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.about-section:hover {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.02);
+}
+
+.about-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #38bdf8;
+}
+
+.about-section p {
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+}
+
+/* --- TECH BADGES --- */
+.tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tech-badges span {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  padding: 6px 15px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* --- DEVELOPER CARD --- */
+.developer-card {
+  border-left: 5px solid #38bdf8;
+  background: linear-gradient(to right, rgba(56, 189, 248, 0.05), transparent);
+}
+
+.developer-card h3 {
+  font-size: 1.8rem;
+  margin: 10px 0;
+}
+
+/* --- BACK BUTTON --- */
+.back-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.back-home-btn {
+  padding: 15px 40px;
+  background: transparent;
+  border: 2px solid #38bdf8;
+  color: #38bdf8;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.back-home-btn:hover {
+  background: #38bdf8;
+  color: #020408;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+  transform: translateX(-5px);
+}
+
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .about-header h1 { font-size: 2rem; }
+  .about-section { padding: 25px; }
+  .back-home-btn { width: 100%; }
+}

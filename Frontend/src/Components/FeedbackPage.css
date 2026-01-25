@@ -1,0 +1,139 @@
+.feedback-page-container {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at bottom left, #0a1022, #050914, #020408);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.feedback-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  padding: 50px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.guide-text {
+  color: #38bdf8;
+}
+
+.feedback-card h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.feedback-card p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 30px;
+}
+
+/* --- STAR RATING --- */
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.star-rating button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 2.5rem;
+  transition: transform 0.2s ease;
+}
+
+.star-rating button:hover {
+  transform: scale(1.2);
+}
+
+.star-rating .on {
+  color: #38bdf8;
+  text-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+}
+
+.star-rating .off {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- FORM ELEMENTS --- */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feedback-form textarea {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  color: #fff;
+  min-height: 120px;
+  font-family: inherit;
+  resize: none;
+  transition: border-color 0.3s;
+}
+
+.feedback-form textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+.submit-feedback-btn {
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.submit-feedback-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
+}
+
+.submit-feedback-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.cancel-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.cancel-btn:hover {
+  color: #fff;
+}
+
+/* Success Card Styling */
+.success-card h2 {
+  color: #38bdf8;
+  margin-bottom: 15px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

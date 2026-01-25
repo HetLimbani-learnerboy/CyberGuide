@@ -1,0 +1,298 @@
+.signup-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #020408;
+  color: #ffffff;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.signup-left {
+  flex: 1;
+  background: linear-gradient(135deg, #0a1022, #1a237e);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%);
+  position: relative;
+  animation: slideInLeft 1s ease-out;
+  z-index: 2;
+}
+
+.signup-left::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 2px 2px, rgba(56, 189, 248, 0.1) 1px, transparent 0);
+  background-size: 30px 30px;
+}
+
+.signup-illustration {
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4));
+  animation: float 4s infinite ease-in-out;
+}
+
+.signup-left h2 {
+  font-size: 2.5rem;
+  color: #38bdf8;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.signup-left p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 350px;
+}
+
+.signup-right {
+  flex: 1.2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  animation: fadeIn 1.2s ease-in;
+  margin-left: -5%; 
+}
+
+.signup-form, .otp-form {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.signup-form h2, .otp-form h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #ffffff, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.signup-form input, .otp-form input {
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.signup-form input:focus, .otp-form input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.05);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.password-wrapper input {
+  width: 100%;
+}
+
+.toggle-password-img {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 22px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.3s;
+}
+
+.toggle-password-img {
+  width: 22px;
+  filter: invert(1); 
+}
+
+.toggle-password-img:hover {
+  opacity: 1;
+}
+
+.password-rules {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-top: -10px;
+}
+
+.password-rules p {
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.signup-btn {
+  padding: 14px;
+  background: linear-gradient(90deg, #38bdf8, #bc13fe);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.4s;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(188, 19, 254, 0.3);
+}
+
+.signup-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.back-step-btn {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.signup-switch-text, .signup-switch-text-back {
+  text-align: center;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
+}
+
+.signup-switch-text a, .signup-switch-text-back a {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+}
+
+.googlesignup-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.googlesignup-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #38bdf8; /* Cyber Cyan glow on hover */
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    transform: translateY(-2px);
+}
+
+.googlesignup-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+    background: white;
+    padding: 2px;
+    border-radius: 4px; /* Matches Google branding style */
+}
+
+/* Loader integration for the Google Button */
+.googlesignup-btn .loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1024px) {
+  .signup-left {
+    flex: 0.8;
+    clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 0% 100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-page {
+    flex-direction: column;
+  }
+  .signup-left {
+    clip-path: none;
+    padding: 60px 20px;
+    flex: none;
+    width: 100%;
+  }
+  .signup-right {
+    padding: 40px 20px;
+    margin-left: 0;
+  }
+  .signup-form {
+    max-width: 100%;
+  }
+}
