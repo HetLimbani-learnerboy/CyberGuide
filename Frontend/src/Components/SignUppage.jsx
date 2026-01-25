@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./SignUpPage.css";
+
 import eyeopen from "../assets/eye_open.png";
 import eyeclose from "../assets/eye-close.svg";
 import SignupImg from "../assets/Signupimg.png";
+
+const API_URL = "http://localhost:8000/api";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -11,7 +14,6 @@ const SignUp = () => {
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  
 
   const [formData, setFormData] = useState({
     name: "",
@@ -32,25 +34,34 @@ const SignUp = () => {
     match: false,
   });
 
+  const safeJson = async (res) => {
+    try {
+      return await res.json();
+    } catch {
+      return {};
+    }
+  };
+
   const handlePasswordChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, password: value });
+    setFormData((prev) => ({ ...prev, password: value }));
 
-    setPasswordValid({
+    setPasswordValid((prev) => ({
+      ...prev,
       length: value.length >= 8,
       upper: /[A-Z]/.test(value),
       lower: /[a-z]/.test(value),
       number: /[0-9]/.test(value),
       special: /[!@#$%^&*]/.test(value),
       match: value === formData.confirmPassword,
-    });
+    }));
   };
 
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, confirmPassword: value });
+    setFormData((prev) => ({ ...prev, confirmPassword: value }));
 
     setPasswordValid((prev) => ({
       ...prev,
@@ -58,64 +69,112 @@ const SignUp = () => {
     }));
   };
 
+  const isPasswordAllValid =
+    passwordValid.length &&
+    passwordValid.upper &&
+    passwordValid.lower &&
+    passwordValid.number &&
+    passwordValid.special &&
+    passwordValid.match;
+
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
 
-    const allValid =
-      passwordValid.length &&
-      passwordValid.upper &&
-      passwordValid.lower &&
-      passwordValid.number &&
-      passwordValid.special &&
-      passwordValid.match;
-
-    if (!allValid) {
+    if (!isPasswordAllValid) {
       alert("Please follow password rules and confirm password correctly.");
       return;
     }
 
     setLoading(true);
 
-    // ✅ Later: call Django API here
-    // Example:
-    // await axios.post("http://localhost:8000/api/signup/", formData);
+    try {
+      // ✅ Signup
+      const signupRes = await fetch(`${API_URL}/signup/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
+        }),
+      });
 
-    setTimeout(() => {
+      const signupData = await safeJson(signupRes);
+
+      if (!signupRes.ok) {
+        alert(signupData.message || "Signup Failed");
+        return;
+      }
+
+      // ✅ Send OTP
+      const otpRes = await fetch(`${API_URL}/send-otp/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email.trim() }),
+      });
+
+      const otpData = await safeJson(otpRes);
+
+      if (!otpRes.ok) {
+        alert(otpData.message || otpData.error || "OTP sending failed");
+        return;
+      }
+
+      alert("Signup successful! OTP sent to your email ✅");
+      setStep(2);
+    } catch (err) {
+      console.log(err);
+      alert("Server error. Please try again.");
+    } finally {
       setLoading(false);
-      setStep(2); // move to OTP step
-    }, 1000);
+    }
   };
 
-  // ✅ OTP Submit
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
 
-    if (otp.length < 4) {
-      alert("Please enter valid OTP");
+    if (!otp || otp.length !== 6) {
+      alert("Enter a valid 6-digit OTP");
       return;
     }
 
     setLoading(true);
 
-    // ✅ Later: call OTP verify API here
-    // Example:
-    // await axios.post("http://localhost:8000/api/verify-otp/", { email: formData.email, otp });
+    try {
+      const verifyRes = await fetch(`${API_URL}/verify-otp/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          otp: otp.trim(),
+        }),
+      });
 
-    setTimeout(() => {
-      setLoading(false);
+      const verifyData = await safeJson(verifyRes);
+
+      if (!verifyRes.ok) {
+        alert(verifyData.message || verifyData.error || "OTP Verification Failed");
+        return;
+      }
+
       alert("OTP Verified Successfully ✅");
       navigate("/login");
-    }, 1000);
+    } catch (err) {
+      console.log(err);
+      alert("Server error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = () => {
+    alert("Google Signup feature will be added soon ✅");
   };
 
   return (
     <div className="signup-page">
       <div className="signup-left">
-        <img
-          src={SignupImg}
-          alt="Signup Illustration"
-          className="signup-illustration"
-        />
+        <img src={SignupImg} alt="Signup" className="signup-illustration" />
         <h2>Welcome to CyberGuide</h2>
         <p>Learn cybersecurity with safe labs, tools, and AI guidance.</p>
       </div>
@@ -130,7 +189,7 @@ const SignUp = () => {
               placeholder="Full Name"
               value={formData.name}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               required
             />
@@ -140,7 +199,7 @@ const SignUp = () => {
               placeholder="Email"
               value={formData.email}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
               }
               required
             />
@@ -155,14 +214,10 @@ const SignUp = () => {
               />
 
               <img
-                src={
-                  passwordVisible
-                    ? eyeopen
-                    : eyeclose
-                }
-                alt="toggle password"
+                src={passwordVisible ? eyeopen : eyeclose}
+                alt="toggle"
                 className="toggle-password-img"
-                onClick={() => setPasswordVisible(!passwordVisible)}
+                onClick={() => setPasswordVisible((prev) => !prev)}
               />
             </div>
 
@@ -182,6 +237,9 @@ const SignUp = () => {
               <p style={{ color: passwordValid.special ? "green" : "red" }}>
                 • Special character (!@#$%^&*)
               </p>
+              <p style={{ color: passwordValid.match ? "green" : "red" }}>
+                • Passwords match
+              </p>
             </div>
 
             <input
@@ -192,29 +250,33 @@ const SignUp = () => {
               required
             />
 
-            <div className="password-rules">
-              <p style={{ color: passwordValid.match ? "green" : "red" }}>
-                • Passwords match
-              </p>
-            </div>
-
-            <button type="submit" className="signup-btn" disabled={loading}>
+            <button
+              type="submit"
+              className="signup-btn"
+              disabled={loading || !isPasswordAllValid}
+            >
               {loading ? <span className="loader"></span> : "Sign Up"}
             </button>
-          <button type="button" className="googlesignup-btn" disabled={loading}>
-    {loading ? (
-        <span className="loader"></span>
-    ) : (
-        <>
-            <img 
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-                alt="Google Logo" 
-                className="google-icon"
-            />
-            <span>Continue with Google</span>
-        </>
-    )}
-</button>
+
+            <button
+              type="button"
+              className="googlesignup-btn"
+              disabled={loading}
+              onClick={handleGoogleSignup}
+            >
+              {loading ? (
+                <span className="loader"></span>
+              ) : (
+                <>
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                    className="google-icon"
+                  />
+                  <span>Continue with Google</span>
+                </>
+              )}
+            </button>
 
             <span className="signup-switch-text">
               Already have an account? <Link to="/login">Sign In</Link>
@@ -229,13 +291,17 @@ const SignUp = () => {
         {step === 2 && (
           <form onSubmit={handleOtpSubmit} className="otp-form">
             <h2>Verify Your Email</h2>
-            <p>Enter OTP sent to <b>{formData.email}</b></p>
+            <p>
+              Enter OTP sent to <b>{formData.email}</b>
+            </p>
 
             <input
               type="text"
-              placeholder="OTP"
+              placeholder="Enter 6-digit OTP"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) =>
+                setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
               required
             />
 
@@ -248,6 +314,7 @@ const SignUp = () => {
                 type="button"
                 className="back-step-btn"
                 onClick={() => setStep(1)}
+                disabled={loading}
               >
                 ⬅ Back
               </button>
