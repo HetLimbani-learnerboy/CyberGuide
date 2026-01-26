@@ -6,9 +6,8 @@ from datetime import timedelta
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     useremail = models.EmailField(unique=True)
-
+    name = models.CharField(max_length=120,default="unknown")
     is_verified = models.BooleanField(default=False)
-
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_created_at = models.DateTimeField(null=True, blank=True)
 
@@ -26,4 +25,4 @@ class Profile(models.Model):
         self.save(update_fields=["otp", "otp_created_at"])
 
     def __str__(self):
-        return self.useremail
+        return f"{self.name} ({self.useremail})"

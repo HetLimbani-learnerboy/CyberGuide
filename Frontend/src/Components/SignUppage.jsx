@@ -88,7 +88,6 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      // ✅ Signup
       const signupRes = await fetch(`${API_URL}/signup/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,7 +105,6 @@ const SignUp = () => {
         return;
       }
 
-      // ✅ Send OTP
       const otpRes = await fetch(`${API_URL}/send-otp/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -120,7 +118,7 @@ const SignUp = () => {
         return;
       }
 
-      alert("Signup successful! OTP sent to your email ✅");
+      alert("Account created successfully! OTP sent to your email ");
       setStep(2);
     } catch (err) {
       console.log(err);
@@ -157,7 +155,10 @@ const SignUp = () => {
         return;
       }
 
-      alert("OTP Verified Successfully ✅");
+      alert("OTP Verified Successfully");
+      localStorage.setItem("cyberguide_user_email", formData.email.trim());
+      localStorage.setItem("cyberguide_user_name", formData.name.trim());
+      
       navigate("/login");
     } catch (err) {
       console.log(err);
@@ -237,9 +238,6 @@ const SignUp = () => {
               <p style={{ color: passwordValid.special ? "green" : "red" }}>
                 • Special character (!@#$%^&*)
               </p>
-              <p style={{ color: passwordValid.match ? "green" : "red" }}>
-                • Passwords match
-              </p>
             </div>
 
             <input
@@ -249,7 +247,9 @@ const SignUp = () => {
               onChange={handleConfirmPasswordChange}
               required
             />
-
+            <p style={{ color: passwordValid.match ? "green" : "red" }}>
+                • Passwords match
+              </p>
             <button
               type="submit"
               className="signup-btn"

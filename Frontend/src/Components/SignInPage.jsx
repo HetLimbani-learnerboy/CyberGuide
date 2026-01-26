@@ -5,45 +5,41 @@ import eyeopen from "../assets/eye_open.png";
 import eyeclose from "../assets/eye-close.svg";
 import MainLogo from "../assets/image.png";
 
-const SignIn = () => {
-  const navigate = useNavigate();
+const API_URL = "http://localhost:8000/api";
 
+const SignIn = ({ setIsAuthenticated }) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const togglePassword = () => setShowPassword((p) => !p);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
-
+    
     try {
-      // ✅ later replace this URL with Django login API
-      const res = await fetch("http://localhost:3021/signin", {
+      const res = await fetch(`${API_URL}/signin/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
-
       const data = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("name", data.user.name);
-        localStorage.setItem("email", data.user.email);
-
-        alert("Login successful!");
-        navigate("/commondashboard");
-      } else {
-        alert(data.message || "Invalid credentials");
+      if (!res.ok) {
+        alert(data.message || "Login failed. Please try again.");
+        setLoading(false);
+        return;
       }
+      localStorage.setItem("cyberguide_user_email", data.user.email);
+      localStorage.setItem("cyberguide_user_name", data.user.name);
+      if(setIsAuthenticated) setIsAuthenticated(true);
+      
+      navigate("/dashboard");
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
+      console.error("Fetch error:", err);
+      alert("Server connection error. Is your Django backend running?");
     } finally {
       setLoading(false);
     }
@@ -51,7 +47,6 @@ const SignIn = () => {
 
   return (
     <div className="signin-wrapper">
-      {/* LEFT SIDE (FORM) */}
       <section className="signin-left">
         <div className="signin-card animate-slide">
           <h2 className="form-title">
@@ -89,12 +84,8 @@ const SignIn = () => {
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 <img
-                  src={
-                    showPassword?
-                     eyeopen:
-                        eyeclose
-                  }
-                  alt={showPassword ? "Hide password" : "Show password"}
+                  src={showPassword ? eyeopen : eyeclose}
+                  alt="Toggle Visibility"
                 />
               </button>
             </div>
@@ -103,7 +94,8 @@ const SignIn = () => {
               {loading ? <span className="loader"></span> : "Sign In"}
             </button>
           </form>
-          <button className="google-signin-btn">
+
+          <button className="google-signin-btn" type="button" onClick={() => alert("Coming soon!")}>
             <img
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
               alt="Google Logo"
@@ -112,25 +104,26 @@ const SignIn = () => {
             <span>Sign In with Google</span>
           </button>
 
-          <span
-            className="forget-password"
-            onClick={() => navigate("/forget-password")}
-          >
-            Forgot Password?
-          </span>
+          <div className="form-footer">
+            <span
+              className="forget-password"
+              onClick={() => navigate("/forget-password")}
+            >
+              Forgot Password?
+            </span>
 
-          <p className="switch-text">
-            Don’t have an account?{" "}
-            <span onClick={() => navigate("/signup")}>Sign Up</span>
-          </p>
+            <p className="switch-text">
+              Don’t have an account?{" "}
+              <Link to="/signup">Sign Up</Link>
+            </p>
 
-          <p className="switch-text-back">
-            <span onClick={() => navigate("/")}>Back to home</span>
-          </p>
+            <p className="switch-text-back">
+              <Link to="/">Back to home</Link>
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* RIGHT SIDE (BRANDING) */}
       <section className="signin-right">
         <div className="branding">
           <img src={MainLogo} alt="CyberGuide Logo" className="brand-logo" />
