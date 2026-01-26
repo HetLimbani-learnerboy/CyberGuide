@@ -15,9 +15,11 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def otp_is_expired(self):
-        if not self.otp_created_at:
+        if not self.otp or not self.otp_created_at:
             return True
-        return timezone.now() > self.otp_created_at + timedelta(minutes=5)
+
+        expiration_time = self.otp_created_at + timedelta(minutes=5)
+        return timezone.now() > expiration_time
 
     def clear_otp(self):
         self.otp = None

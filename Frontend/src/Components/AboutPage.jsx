@@ -7,13 +7,11 @@ const AboutPage = () => {
 
     return (
         <div className="about-page-container">
-            {/* Header Branding */}
             <header className="about-header">
                 <h1>About <span className="guide-text">CyberGuide</span></h1>
             </header>
 
             <main className="about-content">
-                {/* Mission Section */}
                 <section className="about-section">
                     <h2>🛡️ Our Mission</h2>
                     <p>
@@ -23,7 +21,6 @@ const AboutPage = () => {
                     </p>
                 </section>
 
-                {/* Tech Stack Section */}
                 <section className="about-section">
                     <h2>⚙️ The Technology</h2>
                     <div className="tech-badges">
@@ -39,7 +36,6 @@ const AboutPage = () => {
                     </p>
                 </section>
 
-                {/* Developer Section */}
                 <section className="about-section developer-card">
                     <h2>👨‍💻 The Developer</h2>
                     <h3>Het Limbani</h3>
@@ -50,7 +46,6 @@ const AboutPage = () => {
                     </p>
                 </section>
 
-                {/* Back Button */}
                 <div className="back-action">
                     <button className="back-home-btn" onClick={() => navigate('/')}>
                         ⬅ Back to Home

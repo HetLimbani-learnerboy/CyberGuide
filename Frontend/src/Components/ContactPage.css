@@ -30,7 +30,6 @@
   font-size: 1.1rem;
 }
 
-/* Layout Grid */
 .contact-wrapper {
   display: flex;
   gap: 40px;
@@ -43,7 +42,6 @@
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
-/* Form Styling */
 .contact-form-section {
   flex: 1.5;
   padding: 50px;
@@ -103,7 +101,6 @@
   transform: translateY(-2px);
 }
 
-/* Info Panel Styling */
 .contact-info-panel {
   flex: 1;
   padding: 50px;
@@ -164,7 +161,6 @@
   font-weight: bold;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .contact-wrapper { flex-direction: column; }
   .contact-info-panel { order: -1; }

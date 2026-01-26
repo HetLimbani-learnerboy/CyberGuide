@@ -11,7 +11,6 @@ const FeedbackPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you would typically call your Django API
         console.log({ rating, comment });
         setSubmitted(true);
     };
@@ -37,7 +36,6 @@ const FeedbackPage = () => {
                 <p>How would you rate your learning journey on CyberGuide?</p>
 
                 <form onSubmit={handleSubmit} className="feedback-form">
-                    {/* Star Rating System */}
                     <div className="star-rating">
                         {[...Array(5)].map((star, index) => {
                             index += 1;

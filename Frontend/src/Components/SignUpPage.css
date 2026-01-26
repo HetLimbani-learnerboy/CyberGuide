@@ -204,7 +204,7 @@
     width: 100%;
     padding: 12px;
     margin-top: 10px;
-    background: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     color: #ffffff;
@@ -220,7 +220,7 @@
 
 .googlesignup-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
-    border-color: #38bdf8; /* Cyber Cyan glow on hover */
+    border-color: #38bdf8; 
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     transform: translateY(-2px);
 }
@@ -235,10 +235,9 @@
     height: 20px;
     background: white;
     padding: 2px;
-    border-radius: 4px; /* Matches Google branding style */
+    border-radius: 4px; 
 }
 
-/* Loader integration for the Google Button */
 .googlesignup-btn .loader {
     width: 20px;
     height: 20px;

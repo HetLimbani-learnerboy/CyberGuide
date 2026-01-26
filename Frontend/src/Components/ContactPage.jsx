@@ -5,7 +5,6 @@ import './ContactPage.css';
 const ContactPage = () => {
     const navigate = useNavigate();
     const [status, setStatus] = useState("");
-
     const handleSubmit = (e) => {
         e.preventDefault();
         setStatus("Message Sent Successfully! 🛡️");
