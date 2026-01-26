@@ -83,7 +83,6 @@ const LandingPage = () => {
                 </div>
             </main>
 
-            {/* Information Grid Section */}
             <section className="project-info-container reveal-section" ref={infoRef}>
                 <h3>System Modules</h3>
                 
@@ -115,7 +114,6 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* Footer */}
             <footer className='landingpage-footer-container'>
                 <div className='left-side'>
                     <p>&copy; 2026 Cyber<span className="guide-text">Guide</span>. Secured Environment.</p>

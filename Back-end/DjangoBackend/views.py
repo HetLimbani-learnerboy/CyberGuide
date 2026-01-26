@@ -177,3 +177,113 @@ def signin(request):
             "is_verified": profile.is_verified
         }
     }, status=200)
+    
+@api_view(["POST"])
+def forgotpassword(request):
+    email = request.data.get("email")
+    if not email:
+        return JsonResponse({"message": "Email is required"}, status=400)
+    try:
+        user = User.objects.get(username=email)
+        profile = user.profile
+        otp = str(random.randint(100000, 999999))
+        
+        profile.otp = otp
+        profile.otp_created_at = timezone.now()
+        profile.save(update_fields=["otp", "otp_created_at"])
+        subject = "🛡️ CyberGuide - Password Reset Code"
+        html_message = f"""
+        <!DOCTYPE html>
+        <html>
+        <body style="margin: 0; padding: 0; background-color: #020408; font-family: Arial, sans-serif; color: #ffffff;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #020408; padding: 40px 20px;">
+                <tr>
+                    <td align="center">
+                        <table width="400" border="0" cellspacing="0" cellpadding="0" style="background-color: #0a1022; border: 1px solid #38bdf8; border-radius: 15px; padding: 40px; text-align: center;">
+                            <tr>
+                                <td style="padding-bottom: 20px;">
+                                    <h1 style="color: #38bdf8; margin: 0; font-size: 24px; letter-spacing: 2px;">CYBER GUIDE</h1>
+                                    <p style="color: #94a3b8; font-size: 14px;">Security Protocol: Password Reset</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 20px 0;">
+                                    <div style="background: rgba(56, 189, 248, 0.1); border: 1px dashed #38bdf8; border-radius: 10px; padding: 20px; font-size: 32px; font-weight: bold; color: #38bdf8; letter-spacing: 5px;">
+                                        {otp}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #cbd5e1; font-size: 14px; line-height: 1.5; padding-top: 20px;">
+                                    This code is valid for <strong>5 minutes</strong>. <br>
+                                    If you did not request this reset, please secure your account immediately.
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        """
+        
+        plain_message = strip_tags(html_message)
+
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        return JsonResponse({"message": "OTP sent successfully"}, status=200)
+        
+    except User.DoesNotExist:
+        return JsonResponse({"message": "Check email and try again"}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": f"Mail service error: {str(e)}"}, status=500)
+    
+@api_view(["POST"])
+def verifyotp(request):
+    email = request.data.get("email")
+    otp = request.data.get("otp")
+
+    if not email or not otp:
+        return JsonResponse({"message": "Email and OTP are required"}, status=400)
+
+    try:
+        user = User.objects.get(username=email)  
+        profile = user.profile
+        if profile.otp_is_expired():
+            return JsonResponse({"message": "OTP expired"}, status=400)
+        if profile.otp and str(profile.otp) == str(otp):
+            return JsonResponse({"message": "OTP verified successfully"}, status=200)
+
+        return JsonResponse({"message": "Invalid OTP"}, status=400)
+
+    except User.DoesNotExist:
+        return JsonResponse({"message": "User not found"}, status=404)
+
+@api_view(["POST"])
+def resetpassword(request):
+    email = request.data.get("email")
+    otp = request.data.get("otp")
+    new_password = request.data.get("new_password")
+
+    if not all([email, otp, new_password]):
+        return JsonResponse({"message": "All fields are required"}, status=400)
+
+    try:
+        user = User.objects.get(username=email)
+        profile = user.profile
+        print(f"Current Time: {timezone.now()}")
+        print(f"OTP Created At: {profile.otp_created_at}")
+        profile.clear_otp()
+        user.set_password(new_password)
+        user.save() 
+        return JsonResponse({"message": "Password reset successful"}, status=200)
+    
+    except User.DoesNotExist:
+        return JsonResponse({"message": "User not found"}, status=404)
+    

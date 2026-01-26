@@ -38,7 +38,6 @@
   margin-bottom: 30px;
 }
 
-/* --- STAR RATING --- */
 .star-rating {
   display: flex;
   justify-content: center;
@@ -68,7 +67,6 @@
   color: rgba(255, 255, 255, 0.15);
 }
 
-/* --- FORM ELEMENTS --- */
 .feedback-form {
   display: flex;
   flex-direction: column;
@@ -127,7 +125,6 @@
   color: #fff;
 }
 
-/* Success Card Styling */
 .success-card h2 {
   color: #38bdf8;
   margin-bottom: 15px;
