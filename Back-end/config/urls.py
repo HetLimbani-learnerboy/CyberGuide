@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from DjangoBackend.views import signin, signup, send_otp, verify_otp, protected_view, resetpassword, forgotpassword, verifyotp
+from DjangoBackend.views import signin, signup, send_otp, verify_otp, protected_view, resetpassword, forgotpassword, verifyotp, gemini_chat
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -12,4 +12,5 @@ urlpatterns = [
     path("api/forgot-password/", forgotpassword, name="forgot_password"),
     path("api/verify-otp/", verifyotp, name="verifyotp"),
     path("api/reset-password/", resetpassword, name="reset_password"),
+    path("api/chatbot/", gemini_chat, name="gemini_chat"),
 ]

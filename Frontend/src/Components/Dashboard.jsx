@@ -37,7 +37,7 @@ const Dashboard = ({ isAuthenticated }) => {
                     <button className="nav-item active">📊 Overview</button>
                     <button className="nav-item" onClick={() => navigate("/labs")}>🛡️ Active Labs</button>
                     <button className="nav-item" onClick={() => navigate("/tools")}>🛠️ Toolset</button>
-                    <button className="nav-item" onClick={() => navigate("/ai-guidance")}>🤖 AI Mentor</button>
+                    <button className="nav-item" onClick={() => navigate("/chatbot")}>🤖 AI Mentor</button>
                 </nav>
 
                 <div className="sidebar-footer">

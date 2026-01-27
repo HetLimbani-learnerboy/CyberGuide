@@ -1,3 +1,4 @@
+from pyexpat import model
 import random
 from django.utils import timezone
 from django.conf import settings
@@ -9,6 +10,7 @@ from django.utils.html import strip_tags
 from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
 
 from .models import Profile
 
@@ -287,3 +289,30 @@ def resetpassword(request):
     except User.DoesNotExist:
         return JsonResponse({"message": "User not found"}, status=404)
     
+
+
+
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from .gemini_service import ask_gemini
+
+@api_view(["POST"])
+def gemini_chat(request):
+    prompt = request.data.get("prompt")
+    if not prompt or not prompt.strip():
+        return JsonResponse(
+            {"message": "Please enter a question for the AI mentor."},
+            status=400
+        )
+    try:
+        response_text = ask_gemini(prompt.strip())
+        if "AI is currently busy" in response_text:
+            return JsonResponse({"response": response_text}, status=429)
+
+        return JsonResponse({"response": response_text}, status=200)
+
+    except Exception as e:
+        return JsonResponse(
+            {"message": "Gemini connection error", "error": str(e)},
+            status=500
+        )
