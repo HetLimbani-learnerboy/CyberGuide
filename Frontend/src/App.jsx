@@ -9,6 +9,7 @@ import ContactPage from "./Components/ContactPage";
 import ForgetPassword from "./Components/ForgetPassword";
 import Dashboard from "./Components/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
+import ChatBot from "./Components/ChatBot";
 
 const App = () => {
   return (
@@ -27,6 +28,14 @@ const App = () => {
             <Dashboard />
           </ProtectedRoute>
         }
+      />
+      <Route 
+      path="/chatbot"
+      element={
+        <ProtectedRoute>
+          <ChatBot />
+        </ProtectedRoute>
+      }
       />
     </Routes>
   );
