@@ -1,0 +1,24 @@
+.dashboard-sidebar {
+    width: 280px;
+    background: rgba(10, 15, 30, 0.8);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar-logo h2 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.sidebar-logo span { color: var(--cyber-cyan); }
+
+.sidebar-nav {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}

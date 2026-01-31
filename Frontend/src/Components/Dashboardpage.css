@@ -13,32 +13,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* SIDEBAR */
-.dashboard-sidebar {
-    width: 280px;
-    background: rgba(10, 15, 30, 0.8);
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    backdrop-filter: blur(10px);
-}
-
-.sidebar-logo h2 {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-}
-
-.sidebar-logo span { color: var(--cyber-cyan); }
-
-.sidebar-nav {
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1;
-}
-
 .nav-item {
     background: transparent;
     border: none;
@@ -56,7 +30,6 @@
     color: var(--cyber-cyan);
 }
 
-/* MAIN AREA */
 .dashboard-main {
     flex: 1;
     padding: 40px;
@@ -94,7 +67,6 @@
     font-weight: bold;
 }
 
-/* CARDS GRID */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));

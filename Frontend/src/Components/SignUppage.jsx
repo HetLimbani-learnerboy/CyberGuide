@@ -118,7 +118,7 @@ const SignUp = () => {
         return;
       }
 
-      alert("Account created successfully! OTP sent to your email ");
+      alert("OTP sent to your email ");
       setStep(2);
     } catch (err) {
       console.log(err);
@@ -159,7 +159,7 @@ const SignUp = () => {
       localStorage.setItem("cyberguide_user_email", formData.email.trim());
       localStorage.setItem("cyberguide_user_name", formData.name.trim());
       
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       console.log(err);
       alert("Server error. Please try again.");
