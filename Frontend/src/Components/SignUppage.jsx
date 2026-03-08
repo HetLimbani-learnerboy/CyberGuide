@@ -6,7 +6,8 @@ import eyeopen from "../assets/eye_open.png";
 import eyeclose from "../assets/eye-close.svg";
 import SignupImg from "../assets/Signupimg.png";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = "http://127.0.0.1:8000/api";
+const AUTH_URL = "http://127.0.0.1:8000";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const SignUp = () => {
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -27,7 +29,7 @@ const SignUp = () => {
 
   const [passwordValid, setPasswordValid] = useState({
     length: false,
-    upper: false,
+    upper: false, 
     lower: false,
     number: false,
     special: false,
@@ -158,7 +160,7 @@ const SignUp = () => {
       alert("OTP Verified Successfully");
       localStorage.setItem("cyberguide_user_email", formData.email.trim());
       localStorage.setItem("cyberguide_user_name", formData.name.trim());
-      
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
@@ -168,10 +170,10 @@ const SignUp = () => {
     }
   };
 
-  const handleGoogleSignup = () => {
-    alert("Google Signup feature will be added soon ✅");
-  };
-
+ const handleGoogleSignup = () => {
+  setLoadingGoogle(true);
+  window.location.href =`${AUTH_URL}/accounts/google/login/`;
+};
   return (
     <div className="signup-page">
       <div className="signup-left">
@@ -248,8 +250,8 @@ const SignUp = () => {
               required
             />
             <p style={{ color: passwordValid.match ? "green" : "red" }}>
-                • Passwords match
-              </p>
+              • Passwords match
+            </p>
             <button
               type="submit"
               className="signup-btn"
@@ -261,10 +263,10 @@ const SignUp = () => {
             <button
               type="button"
               className="googlesignup-btn"
-              disabled={loading}
+              disabled={loadingGoogle}
               onClick={handleGoogleSignup}
             >
-              {loading ? (
+              {loadingGoogle ? (
                 <span className="loader"></span>
               ) : (
                 <>
