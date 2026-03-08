@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from django.utils.html import strip_tags
 from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
@@ -45,7 +45,6 @@ def signup(request):
                 password=password,
                 first_name=name
             )
-            Profile.objects.create(user=user, useremail=email, name=name, is_verified=False)
         return JsonResponse({"message": "Account created successfully"}, status=201)
     except Exception as e:
         return JsonResponse({"message": f"Server Error: {str(e)}"}, status=500)
@@ -316,3 +315,38 @@ def gemini_chat(request):
             {"message": "Gemini connection error", "error": str(e)},
             status=500
         )
+        
+
+from django.http import JsonResponse
+from django.contrib.auth import logout
+from .models import Profile
+
+
+def current_user(request):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"message": "No authenticated user"}, status=401)
+
+    try:
+        profile = request.user.profile
+
+        return JsonResponse({
+            "name": profile.name,
+            "email": profile.useremail,
+            "is_verified": profile.is_verified
+        })
+
+    except Profile.DoesNotExist:
+
+        # Google OAuth user fallback
+        return JsonResponse({
+            "name": request.user.first_name or request.user.username,
+            "email": request.user.email,
+            "is_verified": True
+        })
+
+
+# Logout API
+def logout_view(request):
+    logout(request)
+    return JsonResponse({"message": "Logged out successfully"})
