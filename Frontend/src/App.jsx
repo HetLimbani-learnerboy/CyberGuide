@@ -21,16 +21,8 @@ const App = () => {
       <Route path="/feedback" element={<FeedbackPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
-      <Route path="/dashboard" element={
-          <Dashboard />
-      } />
-      <Route
-        path="/chatbot"
-        element={
-          <ProtectedRoute>
-            <ChatBot />
-          </ProtectedRoute>
-        }
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/chatbot" element={<ChatBot />}
       />
     </Routes>
   );

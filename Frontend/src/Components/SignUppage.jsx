@@ -29,7 +29,7 @@ const SignUp = () => {
 
   const [passwordValid, setPasswordValid] = useState({
     length: false,
-    upper: false, 
+    upper: false,
     lower: false,
     number: false,
     special: false,
@@ -170,13 +170,35 @@ const SignUp = () => {
     }
   };
 
- const handleGoogleSignup = () => {
-  setLoadingGoogle(true);
-  window.location.href =`${AUTH_URL}/accounts/google/login/`;
-};
+  const handleGoogleSignup = () => {
+    setLoadingGoogle(true);
+    window.location.href = `${AUTH_URL}/accounts/google/login/`;
+  };
   return (
     <div className="signup-page">
       <div className="signup-left">
+        <div className="cyber-network">
+          <span className="node n1"></span>
+          <span className="node n2"></span>
+          <span className="node n3"></span>
+          <span className="node n4"></span>
+          <span className="node n5"></span>
+          <span className="node n6"></span>
+          <span className="node n7"></span>
+          <span className="node n8"></span>
+          <span className="node n9"></span>
+          <span className="node n10"></span>
+
+          <svg className="network-lines">
+            <path d="M80 120 Q200 20 320 120" />
+            <path d="M120 220 Q260 120 420 200" />
+            <path d="M50 300 Q200 200 350 320" />
+            <path d="M200 100 Q340 40 450 150" />
+            <path d="M150 350 Q300 250 420 330" />
+            <path d="M40 180 Q180 80 300 160" />
+          </svg>
+        </div>
+
         <img src={SignupImg} alt="Signup" className="signup-illustration" />
         <h2>Welcome to CyberGuide</h2>
         <p>Learn cybersecurity with safe labs, tools, and AI guidance.</p>

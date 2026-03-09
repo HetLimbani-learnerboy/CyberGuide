@@ -10,6 +10,7 @@ from django.utils.html import strip_tags
 from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from allauth.account.models import EmailAddress
 
 
 from .models import Profile
@@ -43,7 +44,7 @@ def signup(request):
                 username=email,
                 email=email,
                 password=password,
-                first_name=name
+                first_name=name,    
             )
         return JsonResponse({"message": "Account created successfully"}, status=201)
     except Exception as e:
@@ -160,6 +161,8 @@ def signin(request):
     if not all([email,password]):
         return JsonResponse({"message":"Email and Password are required"},status=400)
     try:
+        if EmailAddress.objects.filter(email=email, verified=True).exists():
+            return JsonResponse({"message": "Email registered via Google OAuth. Please use Google Sign-In."}, status=400)
         user=User.objects.get(username=email)
     except User.DoesNotExist:
         return JsonResponse({"message":"User not found. Please Signup or Verify your email"},status=404)
@@ -184,6 +187,8 @@ def forgotpassword(request):
     email = request.data.get("email")
     if not email:
         return JsonResponse({"message": "Email is required"}, status=400)
+    if EmailAddress.objects.filter(email=email, verified=True).exists():
+        return JsonResponse({"message": "Email registered via Google OAuth. Please use Google Sign-In."}, status=400)
     try:
         user = User.objects.get(username=email)
         profile = user.profile
@@ -326,24 +331,25 @@ def current_user(request):
 
     if not request.user.is_authenticated:
         return JsonResponse({"message": "No authenticated user"}, status=401)
-
+    email= request.user.email
     try:
-        profile = request.user.profile
+        profile = Profile.objects.get(useremail=email)
 
         return JsonResponse({
             "name": profile.name,
             "email": profile.useremail,
-            "is_verified": profile.is_verified
+            "is_verified": profile.is_verified,
+            "status":"login_success" 
         })
 
     except Profile.DoesNotExist:
-
         # Google OAuth user fallback
         return JsonResponse({
             "name": request.user.first_name or request.user.username,
-            "email": request.user.email,
-            "is_verified": True
-        })
+            "email": email,
+            "status": "google_account_not_registered",
+            "message": "Please signup using Continue with Google"
+        },status=404)
 
 
 # Logout API
