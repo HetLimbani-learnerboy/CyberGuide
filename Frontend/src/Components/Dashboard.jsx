@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import Slidebar from "./Slidebar";
 import "./Dashboardpage.css";
@@ -10,31 +10,30 @@ const Dashboard = () => {
 
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch logged-in user from Django session
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/auth/me/`, {
-          credentials: "include",
-        });
-
-        if (!res.ok) throw new Error("Not authenticated");
-
-        const data = await res.json();
-
-        setUsername(data.name || "");
-        setUseremail(data.email || "");
-      } catch (err) {
-        console.log("Auth error:", err);
-      } finally {
-        setLoading(false);
-      }
+    const fetchUserData = async () => {
+      fetch(`${BACKEND_URL}/auth/me/`)
+      .then((res) => {
+    if (!res.ok) throw new Error("Network response was not ok");
+    return res.json(); // This converts the raw response into the object you showed
+  })
+  .then((data) => {
+    // Accessing the values from your JSON structure
+    setUsername(data.name);      // Sets "Het"
+    setUseremail(data.email);    // Sets "hetlimbani5506@gmail.com"
+    
+    // You can also access the boolean if needed:
+    // setIsVerified(data.is_verified); 
+  })
+  .catch((error) => {
+    console.error("Error fetching user data:", error);
+  });
     };
-
-    fetchUser();
-  }, [navigate]);
+    
+    fetchUserData();
+  }, []);
 
   // Logout handler
   const handleLogout = async () => {

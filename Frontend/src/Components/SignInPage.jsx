@@ -6,43 +6,64 @@ import eyeclose from "../assets/eye-close.svg";
 import MainLogo from "../assets/image.png";
 
 const API_URL = "http://localhost:8000/api";
+const AUTH_URL = "http://127.0.0.1:8000";
 
 const SignIn = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const togglePassword = () => setShowPassword((p) => !p);
+
+  const isFormValid = email.trim() !== "" && password.trim() !== "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isFormValid) return;
+
     setLoading(true);
-    
+
     try {
       const res = await fetch(`${API_URL}/signin/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
         alert(data.message || "Login failed. Please try again.");
-        setLoading(false);
         return;
       }
+
       localStorage.setItem("cyberguide_user_email", data.user.email);
       localStorage.setItem("cyberguide_user_name", data.user.name);
-      if(setIsAuthenticated) setIsAuthenticated(true);
-      
+
+      if (setIsAuthenticated) setIsAuthenticated(true);
+
       navigate("/dashboard");
+
     } catch (err) {
       console.error("Fetch error:", err);
       alert("Server connection error. Is your Django backend running?");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSignin = () => {
+    setLoadingGoogle(true);
+    window.location.href = `${AUTH_URL}/accounts/google/login/`;
   };
 
   return (
@@ -55,6 +76,7 @@ const SignIn = ({ setIsAuthenticated }) => {
 
           <form onSubmit={handleSubmit} className="signin-form">
             <label htmlFor="email">Email Address</label>
+
             <input
               id="email"
               type="email"
@@ -66,6 +88,7 @@ const SignIn = ({ setIsAuthenticated }) => {
             />
 
             <label htmlFor="password">Password</label>
+
             <div className="password-field">
               <input
                 id="password"
@@ -81,7 +104,6 @@ const SignIn = ({ setIsAuthenticated }) => {
                 type="button"
                 className="toggle-password"
                 onClick={togglePassword}
-                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 <img
                   src={showPassword ? eyeopen : eyeclose}
@@ -90,18 +112,33 @@ const SignIn = ({ setIsAuthenticated }) => {
               </button>
             </div>
 
-            <button type="submit" className="signin-btn" disabled={loading}>
+            <button
+              type="submit"
+              className="signin-btn"
+              disabled={!isFormValid || loading}
+            >
               {loading ? <span className="loader"></span> : "Sign In"}
             </button>
           </form>
 
-          <button className="google-signin-btn" type="button" onClick={() => alert("Coming soon!")}>
-            <img
-              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-              alt="Google Logo"
-              className="google-icon"
-            />
-            <span>Sign In with Google</span>
+          <button
+            className="google-signin-btn"
+            type="button"
+            onClick={handleGoogleSignin}
+            disabled={loadingGoogle}
+          >
+            {loadingGoogle ? (
+              <span className="loader"></span>
+            ) : (
+              <>
+                <img
+                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                  alt="Google Logo"
+                  className="google-icon"
+                />
+                <span>Sign In with Google</span>
+              </>
+            )}
           </button>
 
           <div className="form-footer">
@@ -113,8 +150,7 @@ const SignIn = ({ setIsAuthenticated }) => {
             </span>
 
             <p className="switch-text">
-              Don’t have an account?{" "}
-              <Link to="/signup">Sign Up</Link>
+              Don’t have an account? <Link to="/signup">Sign Up</Link>
             </p>
 
             <p className="switch-text-back">
@@ -125,13 +161,30 @@ const SignIn = ({ setIsAuthenticated }) => {
       </section>
 
       <section className="signin-right">
-        <div className="branding">
-          <img src={MainLogo} alt="CyberGuide Logo" className="brand-logo" />
-          <h1>Welcome Back to CyberGuide</h1>
-          <p>
-            Continue your journey with hands-on labs, AI mentor, and secure
-            learning environment.
-          </p>
+        <div className="terminal-box-signin">
+          <div className="terminal-header-signin">
+            <span className="dot red"></span>
+            <span className="dot yellow"></span>
+            <span className="dot green"></span>
+            <span className="terminal-title-signin">
+              cyberguide@secure-terminal
+            </span>
+          </div>
+
+          <div className="terminal-body-signin">
+            <p className="terminal-line">$ initializing cyber environment...</p>
+            <p className="terminal-line">$ loading security modules...</p>
+            <p className="terminal-line typing">$ welcome-back-user</p>
+
+            <h1 className="terminal-title-text-signin">
+              Welcome Back to CyberGuide
+            </h1>
+
+            <p className="terminal-description-signin">
+              Continue your journey with hands-on labs, AI mentor, and secure
+              learning environment.
+            </p>
+          </div>
         </div>
       </section>
     </div>

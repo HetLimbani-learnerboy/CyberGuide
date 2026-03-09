@@ -7,7 +7,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     useremail = models.EmailField(unique=True)
     name = models.CharField(max_length=120,default="unknown")
-    is_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=True)
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_created_at = models.DateTimeField(null=True, blank=True)
 
