@@ -323,36 +323,82 @@ def gemini_chat(request):
         
 
 from django.http import JsonResponse
-from django.contrib.auth import logout
+from django.contrib.auth import logout,authenticate,login
+from django.views.decorators.csrf import csrf_exempt
+import json
 from .models import Profile
 
 
+# def current_user(request):
+
+#     print("Request user:", request.user)
+#     print("Authenticated:", request.user.is_authenticated)
+
+    # Case 1: Authenticated user
+    # if request.user.is_authenticated:
+    #     email = request.user.email
+
+    #     try:
+    #         profile = Profile.objects.get(useremail=email)
+
+    #         return JsonResponse({
+    #             "name": profile.name,
+    #             "email": profile.useremail,
+    #             "status": "login_success"
+    #         })
+
+    #     except Profile.DoesNotExist:
+    #         return JsonResponse({
+    #             "name": request.user.first_name or request.user.username,
+    #             "email": email,
+    #             "status": "profile_not_found"
+    #         })
+    # email= request.user.email
+    # profile=Profile.objects.get(useremail=email)
+    # return JsonResponse({
+    #     "name": profile.name,
+    #     "email": profile.useremail,
+    #     "message": "User is authenticated",
+    #     # "status": "not_authenticated"
+    # })
+
+CURRENT_NAME = None
+CURRENT_EMAIL = None
+
+
 def current_user(request):
+    global CURRENT_NAME, CURRENT_EMAIL
 
-    if not request.user.is_authenticated:
-        return JsonResponse({"message": "No authenticated user"}, status=401)
-    email= request.user.email
-    try:
-        profile = Profile.objects.get(useremail=email)
+    email = request.user.email
+    profile = Profile.objects.get(useremail=email)
 
-        return JsonResponse({
-            "name": profile.name,
-            "email": profile.useremail,
-            "is_verified": profile.is_verified,
-            "status":"login_success" 
-        })
+    # store globally
+    CURRENT_NAME = profile.name
+    CURRENT_EMAIL = profile.useremail
 
-    except Profile.DoesNotExist:
-        # Google OAuth user fallback
-        return JsonResponse({
-            "name": request.user.first_name or request.user.username,
-            "email": email,
-            "status": "google_account_not_registered",
-            "message": "Please signup using Continue with Google"
-        },status=404)
+    return JsonResponse({
+        "name": CURRENT_NAME,
+        "email": CURRENT_EMAIL,
+        "message": "User is authenticated"
+    })
+    
+def getuserdata(request):
+    global CURRENT_NAME, CURRENT_EMAIL
 
+    return JsonResponse({
+        "name": CURRENT_NAME,
+        "email": CURRENT_EMAIL
+    })   
 
-# Logout API
 def logout_view(request):
+    global CURRENT_NAME, CURRENT_EMAIL
+
     logout(request)
-    return JsonResponse({"message": "Logged out successfully"})
+
+    #  clear stored values
+    CURRENT_NAME = None
+    CURRENT_EMAIL = None
+
+    return JsonResponse({
+        "message": "Logged out successfully"
+    })

@@ -1,38 +1,71 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Slidebar.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Slidebar.css";
 
-const Slidebar = ({ onLogout }) => {
-    const navigate = useNavigate();
+const Slidebar = ({ isOpen, setIsOpen }) => {
+  const navigate = useNavigate();
+  const BACKEND_URL = "http://127.0.0.1:8000";
 
-    return (
-        <aside className="dashboard-sidebar">
-            <div className="sidebar-logo">
-                <h2>Cyber<span>Guide</span></h2>
-            </div>
-            
-            <nav className="sidebar-nav">
-                <button className="nav-item active" onClick={() => navigate("/dashboard")}>
-                    📊 Overview
-                </button>
-                <button className="nav-item" onClick={() => navigate("/labs")}>
-                    🛡️ Active Labs
-                </button>
-                <button className="nav-item" onClick={() => navigate("/tools")}>
-                    🛠️ Toolset
-                </button>
-                <button className="nav-item" onClick={() => navigate("/chatbot")}>
-                    🤖 AI Mentor
-                </button>
-            </nav>
+  const closeSidebar = () => {
+    setIsOpen(false);
+  };
 
-            <div className="sidebar-footer">
-                <button className="logout-btn" onClick={onLogout}>
-                    Logout
-                </button>
-            </div>
-        </aside>
-    );
+  const goTo = (path) => {
+    navigate(path);
+    setIsOpen(false);
+  };
+
+  const onLogout = async () => {
+    try {
+      await fetch(`${BACKEND_URL}/auth/logout/`, {
+        method: "GET",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.log("Logout error:", error);
+    }
+
+    localStorage.clear();
+    navigate("/login");
+  };
+
+  return (
+    <>
+      <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
+
+        <button className="sidebar-close" onClick={closeSidebar}>
+          ✕
+        </button>
+
+        <nav className="sidebar-nav">
+          <button className="nav-item" onClick={() => goTo("/dashboard")}>
+            📊 Overview
+          </button>
+
+          <button className="nav-item" onClick={() => goTo("/labs")}>
+            🛡️ Active Labs
+          </button>
+
+          <button className="nav-item" onClick={() => goTo("/tools")}>
+            🛠️ Toolset
+          </button>
+
+          <button className="nav-item" onClick={() => goTo("/chatbot")}>
+            🤖 AI Mentor
+          </button>
+
+          <button className="logout-btn" onClick={onLogout}>
+            Logout
+          </button>
+        </nav>
+
+      </aside>
+
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+      )}
+    </>
+  );
 };
 
 export default Slidebar;
