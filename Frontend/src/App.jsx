@@ -10,6 +10,8 @@ import ForgetPassword from "./Components/ForgetPassword";
 import Dashboard from "./Components/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import ChatBot from "./Components/ChatBot";
+import ResourcePage from "./Components/ResourcePage";
+import DualTerminal from "./Components/DualTerminal";
 
 const App = () => {
   return (
@@ -22,8 +24,9 @@ const App = () => {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/chatbot" element={<ChatBot />}
-      />
+      <Route path="/chatbot" element={<ChatBot />}/>
+      <Route path="/resources" element={<ResourcePage />}/>
+      <Route path="/labs" element={<DualTerminal/>}/>
     </Routes>
   );
 };

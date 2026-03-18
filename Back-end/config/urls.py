@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
+from terminal.views import control_lab
 from DjangoBackend.views import (
     signin,
     signup,
@@ -29,4 +30,5 @@ urlpatterns = [
     path("api/forgot-password/", forgotpassword, name="forgot_password"),
     path("api/reset-password/", resetpassword, name="reset_password"),
     path("api/chatbot/", gemini_chat, name="chatbot"),
+    path('api/lab/control/', control_lab, name='control_lab'),
 ]

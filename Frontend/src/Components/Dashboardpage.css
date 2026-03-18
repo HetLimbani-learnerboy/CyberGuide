@@ -179,6 +179,159 @@
     color: #94a3b8
 }
 
+.stat-card.action-card {
+    background: rgba(15, 23, 42, .65);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-header-flex h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.add-task-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s;
+}
+
+.add-task-btn:hover {
+    background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+    transform: scale(1.1);
+}
+
+.add-task-form {
+    background: rgba(15, 23, 42, 0.8);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.add-task-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-title-input {
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+}
+
+.selection-div {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    cursor: pointer;
+}
+
+.selection-div option[value="Initial"] {
+    color: #94a3b8;
+}
+
+.selection-div option[value="Working"] {
+    color: #facc15;
+}
+
+.selection-div option[value="Completed"] {
+    color: #22c55e;
+}
+
+.mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.mission-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(2, 6, 23, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.m-name {
+    flex: 1;
+    font-size: 14px;
+    color: #e2e8f0;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.status-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+}
+
+.mission-item button {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.mission-item button:hover {
+    color: #ef4444;
+}
+
+@media (max-width: 480px) {
+    .mission-item {
+        flex-wrap: wrap;
+    }
+
+    .status-tag {
+        order: 3;
+        width: fit-content;
+    }
+
+    .m-name {
+        width: 80%;
+    }
+}
+
 .launch-btn {
     padding: 10px 16px;
     border: none;

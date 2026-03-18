@@ -5,16 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ---------------- BASE ----------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret-key")
 DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost","*"]
 
 
-# ---------------- INSTALLED APPS ----------------
 INSTALLED_APPS = [
+    "daphne", 
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -22,15 +21,25 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "DjangoBackend",
     "rest_framework",
     "corsheaders",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-
-    "DjangoBackend",
+    "terminal",
+    "channels",   
 ]
+
+
+ASGI_APPLICATION = "config.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 SITE_ID = 5
 
@@ -157,3 +166,4 @@ EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
