@@ -7,15 +7,33 @@ const BACKEND_URL = "http://127.0.0.1:8000";
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
 const Dashboard = () => {
+
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
+
   const [loading, setLoading] = useState(true);
-  const [newsList, setNewsList] = useState([]);
-  const [visibleNews, setVisibleNews] = useState(9);
   const [newsLoading, setNewsLoading] = useState(true);
 
+  const [newsList, setNewsList] = useState([]);
+  const [visibleNews, setVisibleNews] = useState(9);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const [showForm, setShowForm] = useState(false);
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskStatus, setTaskStatus] = useState("Initial");
+
+  const [tasks, setTasks] = useState(() => {
+    const stored = localStorage.getItem("cyberguide_tasks");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cyberguide_tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
 
   useEffect(() => {
 
@@ -26,12 +44,15 @@ const Dashboard = () => {
         });
 
         const data = await res.json();
+
         setUsername(data.name);
         setUseremail(data.email);
 
         if (data.email) {
           localStorage.setItem("cyberguide_user_email", data.email);
           localStorage.setItem("cyberguide_user_name", data.name);
+        } else {
+          // navigate("/login");
         }
 
       } catch (error) {
@@ -43,6 +64,7 @@ const Dashboard = () => {
 
     const fetchNews = async () => {
       try {
+
         const response = await fetch(
           `https://newsdata.io/api/1/news?apikey=${API_KEY}&q=cybersecurity&language=en`
         );
@@ -63,18 +85,38 @@ const Dashboard = () => {
     fetchUserData();
     fetchNews();
 
-    // Auto refresh user data every 3 seconds
-    const interval = setInterval(fetchUserData, 3000);
-
-    return () => clearInterval(interval);
-
   }, [navigate]);
 
+
+  const addTask = (e) => {
+    e.preventDefault();
+
+    if (!taskTitle.trim()) return;
+
+    const newTask = {
+      id: Date.now(),
+      title: taskTitle,
+      status: taskStatus
+    };
+
+    setTasks([...tasks, newTask]);
+
+    setTaskTitle("");
+    setTaskStatus("Initial");
+    setShowForm(false);
+  };
+
+
+  const deleteTask = (id) => {
+    const updated = tasks.filter(task => task.id !== id);
+    setTasks(updated);
+  };
 
 
   const loadMoreNews = () => {
     setVisibleNews(prev => prev + 6);
   };
+
 
   if (loading) {
     return (
@@ -85,12 +127,15 @@ const Dashboard = () => {
     );
   }
 
+
   return (
     <div className="dashboard-wrapper">
+
       <Slidebar
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
+
       <button
         className="menu-toggle"
         onClick={() => setIsOpen(!isOpen)}
@@ -98,8 +143,8 @@ const Dashboard = () => {
         ☰
       </button>
 
-      <main className="dashboard-main">
 
+      <main className="dashboard-main">
         <header className="main-header">
           <div className="header-info">
             <h1>
@@ -112,6 +157,7 @@ const Dashboard = () => {
           </div>
 
           <div className="user-badge">
+
             <div className="avatar-circle">
               {username ? username.charAt(0).toUpperCase() : "U"}
             </div>
@@ -120,17 +166,19 @@ const Dashboard = () => {
               <span className="user-name">{username}</span>
               <span className="user-status">● Online</span>
             </div>
+
           </div>
+
         </header>
-
-
 
         <div className="dashboard-grid">
 
           <div className="stat-card profile-card">
+
             <h3>Identity Profile</h3>
 
             <div className="profile-details">
+
               <div className="detail-row">
                 <span className="label">Full Name:</span>
                 <span className="value">{username || "N/A"}</span>
@@ -145,49 +193,98 @@ const Dashboard = () => {
                 <span className="label">Clearance:</span>
                 <span className="value accent">Level 1 (Recruit)</span>
               </div>
+
             </div>
+
           </div>
 
-
-
           <div className="stat-card action-card">
-            <h3>Active Missions</h3>
+
+            <div className="card-header-flex">
+
+              <h3>Active Missions</h3>
+
+              <button
+                className="add-task-btn"
+                onClick={() => setShowForm(!showForm)}
+              >
+                {showForm ? "×" : "+"}
+              </button>
+
+            </div>
+
+
+            {showForm && (
+              <div className="add-task-form">
+
+                <form onSubmit={addTask}>
+
+                  <input
+                    className="task-title-input"
+                    placeholder="Mission Objective"
+                    value={taskTitle}
+                    onChange={(e) => setTaskTitle(e.target.value)}
+                  />
+
+                  <select
+                    className="selection-div"
+                    value={taskStatus}
+                    onChange={(e) => setTaskStatus(e.target.value)}
+                  >
+                    <option value="Initial">Initial</option>
+                    <option value="Working">Working</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+
+                  <button type="submit" className="launch-btn">
+                    Deploy Task
+                  </button>
+
+                </form>
+
+              </div>
+            )}
 
             <div className="mission-list">
 
-              <div className="mission-item">
-                <span className="m-name">SQL Injection Lab</span>
-                <span className="status-tag ongoing">In Progress</span>
-              </div>
+              {tasks.length === 0 ? (
+                <p style={{ color: "#94a3b8" }}>No missions yet</p>
+              ) : (
+                tasks.map(task => (
 
-              <div className="mission-item">
-                <span className="m-name">Nmap Scanning Basics</span>
-                <span className="status-tag locked">Locked</span>
-              </div>
+                  <div key={task.id} className="mission-item">
+
+                    <span className="m-name">{task.title}</span>
+
+                    <span className="status-tag">
+                      {task.status}
+                    </span>
+
+                    <button onClick={() => deleteTask(task.id)}>✕</button>
+
+                  </div>
+
+                ))
+              )}
 
             </div>
-
-            <button
-              className="launch-btn"
-              onClick={() => navigate("/labs")}
-            >
-              Access Lab Environment
+            <button className="launch-btn " onClick={() => navigate('/labs')}>
+              Launch Lab
             </button>
           </div>
-
         </div>
-
-
-
         <div className="news-section-full">
+
           <h3>Latest Security Intelligence</h3>
 
           {newsLoading ? (
             <p className="loading-text">Decrypting feeds...</p>
           ) : (
+
             <div className="news-grid">
 
               {newsList.slice(0, visibleNews).map((item, index) => (
+
                 <div key={index} className="news-card">
 
                   {item.image_url && (
@@ -199,6 +296,7 @@ const Dashboard = () => {
                   )}
 
                   <div className="news-content">
+
                     <h4>{item.title}</h4>
 
                     <p>
@@ -219,9 +317,11 @@ const Dashboard = () => {
                   </div>
 
                 </div>
+
               ))}
 
             </div>
+
           )}
 
           {visibleNews < newsList.length && (
@@ -233,6 +333,7 @@ const Dashboard = () => {
         </div>
 
       </main>
+
     </div>
   );
 };

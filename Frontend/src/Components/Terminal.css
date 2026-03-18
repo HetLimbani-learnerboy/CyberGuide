@@ -1,0 +1,230 @@
+.terminal-card {
+    flex: 1;
+    margin-bottom: 50px;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    animation: terminalEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    min-width: 300px;
+}
+
+.terminal-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dashboard-main {
+    flex: 1;
+    padding: 60px 6%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.terminal-header {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 18px 25px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-red {
+    background: #ff5f56;
+    box-shadow: 0 0 8px rgba(255, 95, 86, 0.3);
+}
+
+.dot-yellow {
+    background: #ffbd2e;
+    box-shadow: 0 0 8px rgba(255, 189, 46, 0.3);
+}
+
+.dot-green {
+    background: #27c93f;
+    box-shadow: 0 0 8px rgba(39, 201, 63, 0.3);
+}
+
+.terminal-body {
+    height: 420px;
+    padding: 25px;
+    background: #0f172a;
+    position: relative;
+    border-left: 4px solid #22c55e;
+}
+
+.terminal-body::before {
+    content: "$";
+    position: absolute;
+    left: 8px;
+    top: 25px;
+    color: #22c55e;
+    font-family: 'Fira Code', monospace;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 5;
+}
+
+.terminal-screen {
+    height: 100%;
+    width: 100%;
+    cursor: text;
+}
+
+.terminal-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terminal-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 10px currentColor;
+    animation: blinkStatus 1.5s infinite;
+}
+
+.terminal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.terminal-actions .btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    background: transparent;
+}
+
+.terminal-actions .btn.ctrl {
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.terminal-actions .btn.ctrl:hover {
+    color: #ffffff;
+    background: rgba(148, 163, 184, 0.1);
+    border-color: #ffffff;
+}
+
+.terminal-actions .btn.kill {
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.terminal-actions .btn.kill:hover {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.terminal-offline {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    background: repeating-linear-gradient(45deg,
+            rgba(0, 0, 0, 0.1),
+            rgba(0, 0, 0, 0.1) 10px,
+            rgba(0, 0, 0, 0.2) 10px,
+            rgba(0, 0, 0, 0.2) 20px);
+}
+
+.xterm-viewport {
+    background-color: transparent !important;
+}
+
+.xterm-rows {
+    line-height: 1.4;
+    color: #ffffff !important;
+}
+
+@keyframes terminalEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes blinkStatus {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@media (max-width: 768px) {
+    .terminal-body {
+        height: 300px;
+    }
+
+    .terminal-header {
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .terminal-actions .btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .terminal-controls {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .terminal-title span {
+        display: none;
+    }
+
+    .terminal-actions {
+        gap: 4px;
+    }
+}

@@ -13,7 +13,7 @@ if not API_KEY:
 genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel(
-    model_name="models/gemini-2.5-flash-lite", 
+    model_name="models/gemini-2.0-flash-lite", 
     system_instruction=(
         "You are the CyberGuide AI Mentor. "
         "Provide technical, concise, and safe cybersecurity advice. "

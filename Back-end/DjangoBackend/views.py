@@ -1,5 +1,8 @@
 from pyexpat import model
 import random
+import json
+import subprocess
+from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
@@ -11,6 +14,7 @@ from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from allauth.account.models import EmailAddress
+from .gemini_service import ask_gemini
 
 
 from .models import Profile
@@ -294,12 +298,6 @@ def resetpassword(request):
         return JsonResponse({"message": "User not found"}, status=404)
     
 
-
-
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
-from .gemini_service import ask_gemini
-
 @api_view(["POST"])
 def gemini_chat(request):
     prompt = request.data.get("prompt")
@@ -321,11 +319,11 @@ def gemini_chat(request):
             status=500
         )
         
+     
 
 from django.http import JsonResponse
 from django.contrib.auth import logout,authenticate,login
-from django.views.decorators.csrf import csrf_exempt
-import json
+
 from .models import Profile
 
 
@@ -402,3 +400,4 @@ def logout_view(request):
     return JsonResponse({
         "message": "Logged out successfully"
     })
+    
