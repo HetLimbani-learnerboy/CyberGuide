@@ -3,7 +3,6 @@ import os
 import pty
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-
 class TerminalConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
@@ -64,18 +63,18 @@ class TerminalConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             if text_data == "__CTRL_C__":
-                # Soft interrupt
+                # Send the literal ASCII character for Ctrl+C (Hex 0x03)
+                # We don't send \n here because we want the signal to hit the active process
                 os.write(self.master_fd, b'\x03')
-                os.write(self.master_fd, b'\n')
-
+                
             elif text_data == "__KILL__":
-                # Force kill all child processes
-                os.write(
-                    self.master_fd,
-                    b"kill -9 $(ps -o pid= --ppid $$)\n"
-                )
+                # Logic: We send a newline to clear the line, then a command to kill common tasks
+                # This is safer than using complex PID logic in a limited Docker shell
+                kill_cmd = "\n pkill -9 ping || pkill -9 nc || pkill -9 nmap \n"
+                os.write(self.master_fd, kill_cmd.encode())
 
             else:
+                # Regular user input
                 os.write(self.master_fd, text_data.encode())
 
         except Exception as e:

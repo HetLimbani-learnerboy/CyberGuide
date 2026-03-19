@@ -19,9 +19,7 @@ urlpatterns = [
     # Google OAuth (django-allauth)
     path("accounts/", include("allauth.urls")),
 
-    # DjangoBackend extra routes (logout, current user)
     path("auth/", include("DjangoBackend.urls")),
-    # ---------------- API ROUTES ----------------
     path("api/signup/", signup, name="signup"),
     path("api/signin/", signin, name="signin"),
     path("api/send-otp/", send_otp, name="send_otp"),

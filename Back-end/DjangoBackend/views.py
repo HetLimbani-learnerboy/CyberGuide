@@ -14,10 +14,11 @@ from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from allauth.account.models import EmailAddress
+from rest_framework.response import Response
 from .gemini_service import ask_gemini
-
-
+from .models import Note
 from .models import Profile
+    
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -321,12 +322,6 @@ def gemini_chat(request):
         
      
 
-from django.http import JsonResponse
-from django.contrib.auth import logout,authenticate,login
-
-from .models import Profile
-
-
 # def current_user(request):
 
 #     print("Request user:", request.user)
@@ -360,9 +355,9 @@ from .models import Profile
     #     # "status": "not_authenticated"
     # })
 
+
 CURRENT_NAME = None
 CURRENT_EMAIL = None
-
 
 def current_user(request):
     global CURRENT_NAME, CURRENT_EMAIL
@@ -370,7 +365,6 @@ def current_user(request):
     email = request.user.email
     profile = Profile.objects.get(useremail=email)
 
-    # store globally
     CURRENT_NAME = profile.name
     CURRENT_EMAIL = profile.useremail
 
@@ -393,11 +387,87 @@ def logout_view(request):
 
     logout(request)
 
-    #  clear stored values
     CURRENT_NAME = None
     CURRENT_EMAIL = None
 
     return JsonResponse({
         "message": "Logged out successfully"
     })
-    
+
+
+@api_view(['GET'])
+def get_notes(request, email):
+    notes = Note.objects.filter(email=email).order_by('-created_at')
+
+    data = [
+        {
+            "id": note.id,
+            "title": note.title,
+            "content": note.content,
+            "created_at": note.created_at
+        }
+        for note in notes
+    ]
+    return Response(data)
+
+
+# ADDNOTE
+@api_view(['POST'])
+def add_note(request):
+    email = request.data.get("email")
+    title = request.data.get("title", "")
+    content = request.data.get("content", "")
+
+    if not email:
+        return Response({"error": "Email required"}, status=400)
+
+    note = Note.objects.create(
+        email=email,
+        title=title,
+        content=content
+    )
+
+    return Response({
+        "status": "success",
+        "message": "Note created",
+        "id": note.id
+    }, status=201)
+
+
+# DELETENOTE
+@api_view(['DELETE'])
+def delete_note(request, note_id):
+    try:
+        email = request.data.get("email")
+
+        note = Note.objects.get(id=note_id, email=email)
+        note.delete()
+
+        return Response({
+            "status": "success",
+            "message": "Note deleted"
+        })
+
+    except Note.DoesNotExist:
+        return Response({"error": "Note not found"}, status=404)
+
+
+# UPDATENOTE
+@api_view(['PUT'])
+def update_note(request, note_id):
+    try:
+        email = request.data.get("email")
+
+        note = Note.objects.get(id=note_id, email=email)
+
+        note.title = request.data.get("title", note.title)
+        note.content = request.data.get("content", note.content)
+        note.save()
+
+        return Response({
+            "status": "success",
+            "message": "Note updated"
+        })
+
+    except Note.DoesNotExist:
+        return Response({"error": "Note not found"}, status=404)

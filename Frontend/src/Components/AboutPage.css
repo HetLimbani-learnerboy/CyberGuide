@@ -111,7 +111,15 @@
 }
 
 @media (max-width: 768px) {
-  .about-header h1 { font-size: 2rem; }
-  .about-section { padding: 25px; }
-  .back-home-btn { width: 100%; }
+  .about-header h1 {
+    font-size: 2rem;
+  }
+
+  .about-section {
+    padding: 25px;
+  }
+
+  .back-home-btn {
+    width: 100%;
+  }
 }

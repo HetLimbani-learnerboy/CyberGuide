@@ -12,6 +12,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ChatBot from "./Components/ChatBot";
 import ResourcePage from "./Components/ResourcePage";
 import DualTerminal from "./Components/DualTerminal";
+import NotesPage from "./Components/Notes";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="/chatbot" element={<ChatBot />}/>
       <Route path="/resources" element={<ResourcePage />}/>
       <Route path="/labs" element={<DualTerminal/>}/>
+      <Route path="/notes" element={<NotesPage/>}/>
     </Routes>
   );
 };
