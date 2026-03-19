@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
-import cyberImage from '../assets/CyberSecurity.png';
 
 const LandingPage = () => {
     const navigate = useNavigate();
@@ -83,15 +82,16 @@ const LandingPage = () => {
                 </div>
 
                 <div className="terminal-wrapper">
-                    <div className="terminal-box">
+                    <div className="terminal-box-landing">
 
-                        <div className="terminal-header">
-                            <div className="terminal-dot dot-red"></div>
-                            <div className="terminal-dot dot-yellow"></div>
-                            <div className="terminal-dot dot-green"></div>
+                        <div className="terminal-header-landing">
+                            <div className="terminal-dot-landing dot-red-landing"></div>
+                            <div className="terminal-dot-landing dot-yellow-landing"></div>
+                            <div className="terminal-dot-landing dot-green-landing"></div>
                         </div>
 
-                        <div className="terminal-body" ref={terminalRef}>
+
+                        <div className="terminal-body-landing" ref={terminalRef}>
 
                             <p><span className="terminal-green">$</span> nmap -sV target.com</p>
                             <p className="typing">Scanning open ports...</p>
@@ -142,7 +142,6 @@ const LandingPage = () => {
 
             <div className="project-outer-wrapper">
                 <section className="project-info-container reveal-section" ref={infoRef}>
-                    {/* Heartbeat Pulse Elements */}
                     <div className="pulse-circle"></div>
                     <div className="pulse-grid-overlay"></div>
 

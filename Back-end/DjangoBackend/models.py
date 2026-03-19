@@ -28,3 +28,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.useremail})"
+    
+
+class Note(models.Model):
+    email = models.EmailField()
+    title = models.CharField(max_length=255, blank=True)
+    content = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.email} - {self.title}"

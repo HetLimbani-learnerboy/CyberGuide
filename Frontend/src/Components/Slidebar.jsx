@@ -49,7 +49,9 @@ const Slidebar = ({ isOpen, setIsOpen }) => {
           <button className="nav-item" onClick={() => goTo("/resources")}>
             📚 Resources
           </button>
-
+          <button className="nav-item" onClick={() => goTo("/notes")}>
+            📝 Notes
+          </button>
           <button className="nav-item" onClick={() => goTo("/chatbot")}>
             🤖 AI Mentor
           </button>

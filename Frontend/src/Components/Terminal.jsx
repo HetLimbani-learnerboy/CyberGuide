@@ -14,7 +14,7 @@ const TerminalInstance = ({ type, title, color, isLabRunning }) => {
 
         const term = new Terminal({
             cursorBlink: true,
-            cursorStyle: 'underline', 
+            cursorStyle: 'underline',
             theme: {
                 background: '#0f172a',
                 foreground: '#ffffff',
@@ -60,11 +60,18 @@ const TerminalInstance = ({ type, title, color, isLabRunning }) => {
     }, [type, color, isLabRunning]);
 
     const handleKill = () => {
-        socketRef.current?.send("__CTRL_C__");
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            // Clear xterm local buffer and send signal
+            socketRef.current.send("__CTRL_C__");
+        }
     };
 
     const handleForceKill = () => {
-        socketRef.current?.send("__KILL__");
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            // Send a few newlines first to make sure we aren't appending to a broken command
+            socketRef.current.send("\n");
+            socketRef.current.send("__KILL__");
+        }
     };
 
     return (

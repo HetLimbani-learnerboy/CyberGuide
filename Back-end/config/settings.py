@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    "DjangoBackend",
+    "DjangoBackend.apps.DjangobackendConfig",
     "rest_framework",
     "corsheaders",
     "allauth",
