@@ -4,8 +4,9 @@
 
 It also includes an **interactive dual-terminal environment**, where users can work with **two terminals on a single page**, enabling hands-on practice such as attacker–victim simulations, command execution, and real-time experimentation in a simplified interface.
 
-Additionally, the platform provides a **dedicated Resources & Notes section**, where users can access curated cybersecurity materials, theoretical papers, practical lab guides, and even upload their own documents to personal cloud storage for easy reference and learning continuity.
+Additionally, the platform provides a **dedicated Resources & Notes section**, where users can access curated cybersecurity materials, theoretical papers, practical lab guides, and upload their own documents to personal cloud storage for easy reference and learning continuity.
 
+To keep users updated with the latest trends, CyberGuide integrates a **Cybersecurity News API**, delivering real-time security news, threat updates, and industry insights directly within the platform.
 
 ---
 
@@ -24,6 +25,7 @@ Real-time cybersecurity guidance powered by **Google Gemini (multi-model fallbac
 Interactive **two-terminal interface on a single page** allowing users to simulate attacker–victim scenarios, execute commands in parallel, and perform hands-on cybersecurity experiments seamlessly.
 
 </details>
+
 <details>
 <summary>⚡ Real-Time API Integration</summary>
 
@@ -40,7 +42,16 @@ Dark-mode interface with **glassmorphism design**, smooth animations, and respon
 
 <details>
 <summary>🔐 Secure Backend Architecture</summary>
+
 Environment-based configuration, protected API routes, and controlled AI responses to ensure safe and reliable system behavior.
+
+</details>
+
+<details>
+<summary>🔑 Authentication & User Management</summary>
+
+Secure authentication system with **Google OAuth login** and traditional **email-based signup/login using OTP verification**.
+Includes **forgot password functionality via email OTP**, ensuring secure account recovery and user identity validation.
 
 </details>
 
@@ -50,6 +61,7 @@ Environment-based configuration, protected API routes, and controlled AI respons
 Containerized attacker and victim setups using Docker, enabling isolated and reproducible cybersecurity lab simulations.
 
 </details>
+
 <details>
 <summary>☁️ AWS S3 Resource Library</summary>
 
@@ -73,7 +85,9 @@ Dedicated section for organizing study materials, enabling users to access curat
 
 <details>
 <summary>⭐ Interactive Feedback System</summary>
+
 Star-rating and comment-based system to collect user feedback and improve platform experience.
+
 </details>
 
 ---
@@ -134,6 +148,7 @@ CyberGuide/
 | AI Model        | Google Gemini (Flash / Flash-Lite, Multi-model fallback)             |
 | Database        | PostgreSQL (Neon.tech)                                               |
 | Storage         | AWS S3 (Cloud Object Storage)                                        |
+| Authentication  | Google OAuth 2.0, Email OTP Verification, Forgot Password via OTP    |
 | DevOps          | Docker, Docker Compose                                               |
 | API             | REST APIs, JSON, Fetch API                                           |
 | Realtime        | WebSockets (Django Channels for Terminal)                            |
@@ -141,7 +156,6 @@ CyberGuide/
 | Version Control | Git, GitHub                                                          |
 | Terminal Engine | Pseudo Terminal (PTY), WebSocket Streaming                           |
 | UI/UX           | Dark Mode UI, Responsive Design, Animations                          |
-
 
 ---
 
@@ -272,21 +286,6 @@ If a **429 rate limit error** occurs, the system automatically switches models.
 3. File uploaded to AWS S3 via `boto3`
 4. Public S3 URL stored in PostgreSQL
 
----
-
-## 📝 Database Schema
-
-### Table: `DjangoBackend_userresource`
-
-| Field       | Type         |
-| ----------- | ------------ |
-| id          | Primary Key  |
-| useremail   | VARCHAR(255) |
-| title       | VARCHAR(255) |
-| pdf_url     | VARCHAR(500) |
-| uploaded_at | TIMESTAMP    |
-
----
 
 ## 🛡️ Security Best Practices
 
