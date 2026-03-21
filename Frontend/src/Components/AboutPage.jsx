@@ -15,8 +15,8 @@ const AboutPage = () => {
                 <section className="about-section">
                     <h2>🛡️ Our Mission</h2>
                     <p>
-                        CyberGuide was developed to bridge the gap between theoretical cybersecurity and practical 
-                        application. Our platform provides a safe, containerized environment where students can 
+                        CyberGuide was developed to bridge the gap between theoretical cybersecurity and practical
+                        application. Our platform provides a safe, containerized environment where students can
                         practice ethical hacking and defense strategies without any risk to their local systems.
                     </p>
                 </section>
@@ -31,7 +31,7 @@ const AboutPage = () => {
                         <span>PostgreSQL</span>
                     </div>
                     <p>
-                        By leveraging <b>Docker</b> for lab isolation and <b>Google's Gemini API</b> for real-time 
+                        By leveraging <b>Docker</b> for lab isolation and <b>Google's Gemini API</b> for real-time
                         guidance, CyberGuide offers an industrial-level learning experience directly on your localhost.
                     </p>
                 </section>
@@ -41,7 +41,7 @@ const AboutPage = () => {
                     <h3>Het Limbani</h3>
                     <p>Computer Science Engineering Student (AI & ML) | Adani University</p>
                     <p>
-                        Enthusiastic Full-Stack Developer focused on building secure, 
+                        Enthusiastic Full-Stack Developer focused on building secure,
                         AI-integrated web applications that solve real-world problems.
                     </p>
                 </section>
@@ -52,7 +52,7 @@ const AboutPage = () => {
                     </button>
                 </div>
             </main>
-            
+
         </div>
     );
 };

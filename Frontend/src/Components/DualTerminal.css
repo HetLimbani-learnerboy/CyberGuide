@@ -1,29 +1,99 @@
+.dashboard-wrapper {
+    min-height: 100vh;
+    background: #020617; 
+    color: #e2e8f0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 4%;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-info h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.header-info .highlight {
+    color: #38bdf8;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.header-info p {
+    color: #94a3b8;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* MENU TOGGLE */
+.menu-toggle {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.3s;
+}
+
+.menu-toggle:hover {
+    background: #1e293b;
+    border-color: #38bdf8;
+}
+
 .terminal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    grid-template-columns: repeat(2, 1fr); 
     gap: 24px;
     margin-top: 10px;
+    flex: 1;
     animation: cardFade 0.8s ease;
 }
 
 .launch-btn {
-    padding: 12px 24px;
+    padding: 14px 28px;
     border: none;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    letter-spacing: 1px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    text-transform: uppercase;
 }
 
 .launch-btn.start {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     color: white;
-    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2);
 }
 
 .launch-btn.stop {
@@ -34,21 +104,18 @@
 
 .launch-btn:hover:not(:disabled) {
     transform: translateY(-3px);
-    filter: brightness(1.1);
+    filter: brightness(1.2);
 }
 
-.launch-btn.start:hover {
-    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
-}
-
-.launch-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
+.launch-btn.loading {
+    cursor: wait;
+    opacity: 0.8;
+    position: relative;
+    overflow: hidden;
 }
 
 .dashboard-footer {
-    margin-top: auto;
+    margin-top: 30px;
     padding: 20px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -56,27 +123,61 @@
 .status-indicator {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: #94a3b8;
-    font-size: 13px;
+    font-size: 12px;
     font-family: 'Fira Code', monospace;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+    width: fit-content;
 }
 
 .status-indicator .dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #475569;
 }
 
 .status-indicator .dot.active {
     background: #22c55e;
-    box-shadow: 0 0 10px #22c55e;
+    box-shadow: 0 0 12px #22c55e;
     animation: blinkStatus 1.5s infinite;
 }
 
-@media (max-width: 1024px) {
+@keyframes cardFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blinkStatus {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+@media (max-width: 1100px) {
     .terminal-grid {
         grid-template-columns: 1fr;
+    }
+
+    .main-header {
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .lab-controls {
+        width: 100%;
+    }
+
+    .launch-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .header-info h1 {
+        font-size: 22px;
     }
 }

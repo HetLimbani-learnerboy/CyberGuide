@@ -1,4 +1,7 @@
+import os
+from django.conf import settings
 from django.contrib import admin
+from django.conf.urls.static import static
 from django.urls import include, path
 from terminal.views import control_lab
 from DjangoBackend.views import (
@@ -30,3 +33,13 @@ urlpatterns = [
     path("api/chatbot/", gemini_chat, name="chatbot"),
     path('api/lab/control/', control_lab, name='control_lab'),
 ]
+
+urlpatterns+=static(
+    '/pdfs/theory/',
+    document_root=os.path.join(settings.BASE_DIR,"PDF","Theory")
+)
+
+urlpatterns += static(
+    '/pdfs/lab/',
+    document_root=os.path.join(settings.BASE_DIR, "PDF", "Lab")
+)
