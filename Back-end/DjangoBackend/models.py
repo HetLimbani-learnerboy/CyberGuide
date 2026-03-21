@@ -29,7 +29,6 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.name} ({self.useremail})"
     
-
 class Feedback(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -46,3 +45,12 @@ class Note(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.title}"
+    
+class UserResource(models.Model):
+    useremail = models.EmailField(max_length=255)
+    title = models.CharField(max_length=255)
+    pdf_url = models.URLField(max_length=500) 
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.useremail} - {self.title}"

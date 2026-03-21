@@ -17,8 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from allauth.account.models import EmailAddress
 from rest_framework.response import Response
 from .gemini_service import ask_gemini
-from .models import Note, Feedback
-from .models import Profile
+from .models import Note, Feedback, UserResource, Profile
     
 
 @api_view(["GET"])
@@ -623,3 +622,61 @@ def get_labpdfs(request):
         "status": "success",
         "data": files
     })
+
+from .s3_utils import upload_pdf_to_s3
+
+@csrf_exempt
+def upload_resource(request):
+    if request.method == "POST":
+        try:
+            # Files are in request.FILES, text data is in request.POST
+            email = request.POST.get("email")
+            title = request.POST.get("title")
+            pdf_file = request.FILES.get("pdf")
+
+            if not pdf_file or not email:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
+
+            # 1. Upload to S3
+            # We append a timestamp or use unique names to prevent overwriting
+            s3_url = upload_pdf_to_s3(pdf_file, f"uploads/{email}/{pdf_file.name}")
+
+            if s3_url:
+                new_resource = UserResource.objects.create(
+                    useremail=email,
+                    title=title,
+                    pdf_url=s3_url
+                )
+                
+                return JsonResponse({
+                    "message": "Resource uploaded and saved!",
+                    "url": s3_url
+                }, status=201)
+            
+            return JsonResponse({"error": "Failed to upload to S3"}, status=500)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Only POST allowed"}, status=405)
+
+def get_user_resources(request):
+    # Get email from query parameters: /api/get-user-resources/?email=user@example.com
+    email = request.GET.get('email')
+    
+    if not email:
+        return JsonResponse({"error": "Email parameter is required"}, status=400)
+    
+    try:
+        # Filter resources by the provided email
+        resources = UserResource.objects.filter(useremail=email).values(
+            'id', 'title', 'pdf_url', 'uploaded_at'
+        ).order_by('-uploaded_at') 
+        
+        return JsonResponse({
+            "status": "success",
+            "data": list(resources)
+        }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

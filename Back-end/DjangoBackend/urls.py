@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import current_user, contactus,add_feedback,get_feedbacks,getuserdata, logout_view, get_notes, add_note, delete_note, update_note, get_pdfs,get_labpdfs
+from .views import current_user, contactus,add_feedback,get_feedbacks,getuserdata, logout_view, get_notes, add_note, delete_note, update_note, get_pdfs,get_labpdfs, upload_resource, get_user_resources
 
 
 urlpatterns = [
@@ -14,5 +14,7 @@ urlpatterns = [
     path("deletenote/<int:note_id>/", delete_note),
     path("updatenote/<int:note_id>/", update_note),
     path("getpdfs/", get_pdfs), 
-    path('getlabpdfs/',get_labpdfs)
+    path('getlabpdfs/',get_labpdfs),
+    path("upload-resource/", upload_resource, name="upload_resource"),
+    path("get-user-resources/", get_user_resources, name="get_user_resources")
 ]

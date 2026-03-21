@@ -13,7 +13,7 @@ if not API_KEY:
 
 genai.configure(api_key=API_KEY)
 
-# ✅ List models in order of priority (Highest Quota First)
+#  List models in order of priority (Highest Quota First)
 MODELS_TO_TRY = [
     "models/gemini-2.5-flash-lite", # Best for Free Tier (15 RPM)
     "models/gemini-2.5-flash",      # High Intelligence (10 RPM)
