@@ -2,67 +2,142 @@
 
 **CyberGuide** is a comprehensive cybersecurity educational platform featuring an **AI-powered Mentor** for technical guidance and a **Cloud-Integrated Resource Library** for lab documents and theoretical research.
 
+It also includes an **interactive dual-terminal environment**, where users can work with **two terminals on a single page**, enabling hands-on practice such as attacker–victim simulations, command execution, and real-time experimentation in a simplified interface.
+
+Additionally, the platform provides a **dedicated Resources & Notes section**, where users can access curated cybersecurity materials, theoretical papers, practical lab guides, and even upload their own documents to personal cloud storage for easy reference and learning continuity.
+
+
 ---
 
 ## 🚀 Key Features
 
-* **AI Mentor Chatbot**
-  Real-time cybersecurity advice powered by **Google Gemini (multi-model fallback)** to handle rate limits and ensure reliability.
+<details>
+<summary>🤖 AI Mentor Chatbot</summary>
 
-* **AWS S3 Resource Library**
-  Publicly accessible PDFs for cybersecurity labs and theoretical research.
+Real-time cybersecurity guidance powered by **Google Gemini (multi-model fallback)** with automatic model switching to handle rate limits and ensure uninterrupted responses.
 
-* **User Cloud Storage**
-  Upload personal PDFs to AWS S3 with metadata stored in **PostgreSQL (Neon Tech)**.
+</details>
 
-* **Interactive Feedback System**
-  Star-rating + comment system to track user experience.
+<details>
+<summary>💻 Dual Terminal Cyber Lab</summary>
 
-* **Cyber Lab Dashboard**
-  Modern dark-mode UI with glassmorphism and smooth animations.
+Interactive **two-terminal interface on a single page** allowing users to simulate attacker–victim scenarios, execute commands in parallel, and perform hands-on cybersecurity experiments seamlessly.
+
+</details>
+<details>
+<summary>⚡ Real-Time API Integration</summary>
+
+Seamless communication between React frontend and Django backend using REST APIs and async operations for fast and responsive interactions.
+
+</details>
+
+<details>
+<summary>🎨 Modern Cyber Dashboard UI</summary>
+
+Dark-mode interface with **glassmorphism design**, smooth animations, and responsive layout for an engaging user experience.
+
+</details>
+
+<details>
+<summary>🔐 Secure Backend Architecture</summary>
+Environment-based configuration, protected API routes, and controlled AI responses to ensure safe and reliable system behavior.
+
+</details>
+
+<details>
+<summary>🐳 Dockerized Lab Environment</summary>
+
+Containerized attacker and victim setups using Docker, enabling isolated and reproducible cybersecurity lab simulations.
+
+</details>
+<details>
+<summary>☁️ AWS S3 Resource Library</summary>
+
+Publicly accessible repository of cybersecurity PDFs, including practical labs, tools documentation, and theoretical research papers.
+
+</details>
+
+<details>
+<summary>📂 User Cloud Storage</summary>
+
+Upload and manage personal PDFs directly to AWS S3 with metadata securely stored in **PostgreSQL (Neon Tech)** for persistent access.
+
+</details>
+
+<details>
+<summary>📝 Resource & Notes Management</summary>
+
+Dedicated section for organizing study materials, enabling users to access curated content and maintain their own learning notes in one place.
+
+</details>
+
+<details>
+<summary>⭐ Interactive Feedback System</summary>
+Star-rating and comment-based system to collect user feedback and improve platform experience.
+</details>
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 CyberGuide/
-├── Frontend/                # React Application
-│   ├── src/
-│   │   ├── assets/          # Images, Icons
-│   │   ├── components/      # Reusable UI Components
-│   │   ├── pages/           # ChatBot, ResourcePage, FeedbackPage
-│   │   └── App.js           # Routing
-│   ├── public/
-│   └── package.json
+├── Frontend/                          # React Frontend Application
+│   ├── src/                           # Source code
+│   │   ├── assets/                    # Images, icons, static files
+│   │   ├── components/                # Reusable UI components
+│   │   └── App.js                     # Routing configuration
+│   ├── public/                        # Static public files
+│   └── package.json                   # Frontend dependencies
 │
-├── Backend/                 # Django Backend
-│   ├── DjangoBackend/
-│   │   ├── models.py        # DB Models
-│   │   ├── views.py         # API Endpoints
-│   │   ├── s3_utils.py      # AWS Integration
-│   │   └── gemini_utils.py  # AI Logic
-│   ├── manage.py
-│   └── requirements.txt
+├── Backend/                           # Django Backend Server
+│   ├── DjangoBackend/                 # Main Django App
+│   │   ├── models.py                  # Database models (UserResource, Feedback)
+│   │   ├── views.py                   # API endpoints (AI, Feedback, S3 upload)
+│   │   ├── s3_utils.py                # AWS S3 upload logic using boto3
+│   │   └── gemini_utils.py            # Gemini AI integration + fallback logic
+│   │
+│   ├── config/                        # Django Project Configuration
+│   │   ├── asgi.py                    # ASGI config (for WebSockets / Daphne)
+│   │   ├── settings.py                # Main project settings (DB, CORS, etc.)
+│   │   ├── urls.py                    # Global URL routing
+│   │   └── wsgi.py                    # WSGI config (for production servers)
+│   │
+│   ├── terminal/                      # Web-based terminal module (cyber lab)
+│   │   ├── __init__.py                # Package initializer
+│   │   ├── consumer.py                # WebSocket consumer (real-time terminal)
+│   │   └── views.py                   # Terminal-related APIs
+│   │
+│   ├── manage.py                      # Django CLI entry point
+│   └── requirements.txt               # Backend dependencies
 │
-└── Docker/                  # Deployment
-    ├── docker-compose.yml
-    ├── frontend.Dockerfile
-    └── backend.Dockerfile
+└── Docker/                            # Dockerized Cyber Lab Environment
+    ├── attacker/                      # Attacker container (Kali / tools)
+    │   └── Dockerfile                 # Docker config for attacker environment
+    │
+    ├── victim/                        # Victim container (vulnerable machine)
+    │   └── Dockerfile                 # Docker config for vulnerable system
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer    | Technology                    |
-| -------- | ----------------------------- |
-| Frontend | React.js, CSS3                |
-| Backend  | Django, Django REST Framework |
-| AI Model | Google Gemini                 |
-| Database | PostgreSQL (Neon.tech)        |
-| Storage  | AWS S3                        |
-| DevOps   | Docker                        |
+| Layer           | Technology                                                           |
+| --------------- | -------------------------------------------------------------------- |
+| Frontend        | React.js, React Router, CSS3 (Animations, Glassmorphism)             |
+| Backend         | Django, Django REST Framework (DRF)                                  |
+| AI Model        | Google Gemini (Flash / Flash-Lite, Multi-model fallback)             |
+| Database        | PostgreSQL (Neon.tech)                                               |
+| Storage         | AWS S3 (Cloud Object Storage)                                        |
+| DevOps          | Docker, Docker Compose                                               |
+| API             | REST APIs, JSON, Fetch API                                           |
+| Realtime        | WebSockets (Django Channels for Terminal)                            |
+| Cloud Tools     | AWS IAM, S3 Bucket Policies                                          |
+| Version Control | Git, GitHub                                                          |
+| Terminal Engine | Pseudo Terminal (PTY), WebSocket Streaming                           |
+| UI/UX           | Dark Mode UI, Responsive Design, Animations                          |
+
 
 ---
 
