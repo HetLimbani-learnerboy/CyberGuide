@@ -6,7 +6,7 @@ import subprocess
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
@@ -17,8 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from allauth.account.models import EmailAddress
 from rest_framework.response import Response
 from .gemini_service import ask_gemini
-from .models import Note
-from .models import Profile
+from .models import Note, Feedback, UserResource, Profile
     
 
 @api_view(["GET"])
@@ -30,6 +29,116 @@ def protected_view(request):
 
     return JsonResponse({"message": "Access granted"}, status=200)
 
+
+@api_view(["POST"])
+def contactus(request):
+    name = request.data.get("name")
+    email = request.data.get("email")
+    subject = request.data.get("subject")
+    message = request.data.get("message")
+
+    if not name or not email or not message:
+        return Response({"error": "All fields are required"}, status=400)
+
+    try:
+        subject_line = f"CyberGuide Contact: {subject}"
+
+        text_content = f"""
+New Contact Form Submission
+
+Name: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+"""
+
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; background:#020617; padding:30px;">
+            <div style="max-width:600px;margin:auto;background:#0f172a;padding:25px;border-radius:12px;border:1px solid #38bdf8;">
+                
+                <h2 style="color:#38bdf8;text-align:center;">📩 New Contact Message</h2>
+                
+                <div style="margin-top:20px;color:#e2e8f0;">
+                    <p><strong>👤 Name:</strong> {name}</p>
+                    <p><strong>📧 Email:</strong> {email}</p>
+                    <p><strong>📌 Subject:</strong> {subject}</p>
+                </div>
+
+                <div style="margin-top:20px;padding:15px;background:#020617;border-radius:8px;color:#e2e8f0;">
+                    <p style="margin:0;"><strong>💬 Message:</strong></p>
+                    <p style="margin-top:10px;line-height:1.6;">{message}</p>
+                </div>
+
+                <div style="margin-top:25px;text-align:center;">
+                    <p style="font-size:12px;color:#94a3b8;">
+                        Sent via CyberGuide Contact System
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        """
+
+        email_msg = EmailMultiAlternatives(
+            subject=subject_line,
+            body=text_content,
+            from_email=settings.EMAIL_HOST_USER,
+            to=[settings.EMAIL_HOST_USER],
+        )
+
+        email_msg.attach_alternative(html_content, "text/html")
+        email_msg.send()
+
+        return Response({
+            "status": "success",
+            "message": "Email sent successfully"
+        })
+
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=500)
+        
+@api_view(["POST"])
+def add_feedback(request):
+    name = request.data.get("name")
+    email = request.data.get("email")
+    rating = request.data.get("rating")
+    comment = request.data.get("comment")
+
+    if not name or not email or not rating or not comment:
+        return Response({"error": "All fields required"}, status=400)
+
+    fb = Feedback.objects.create(
+        name=name,
+        email=email,
+        rating=rating,
+        comment=comment
+    )
+
+    return Response({"status": "success"})
+
+
+@api_view(["GET"])
+def get_feedbacks(request):
+    feedbacks = Feedback.objects.all().order_by("-created_at")
+
+    data = [
+        {
+            "name": fb.name,
+            "email": fb.email,
+            "rating": fb.rating,
+            "comment": fb.comment
+        }
+        for fb in feedbacks
+    ]
+
+    return Response({
+        "status": "success",
+        "data": data
+    })
 
 @api_view(["POST"])
 def signup(request):
@@ -513,3 +622,61 @@ def get_labpdfs(request):
         "status": "success",
         "data": files
     })
+
+from .s3_utils import upload_pdf_to_s3
+
+@csrf_exempt
+def upload_resource(request):
+    if request.method == "POST":
+        try:
+            # Files are in request.FILES, text data is in request.POST
+            email = request.POST.get("email")
+            title = request.POST.get("title")
+            pdf_file = request.FILES.get("pdf")
+
+            if not pdf_file or not email:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
+
+            # 1. Upload to S3
+            # We append a timestamp or use unique names to prevent overwriting
+            s3_url = upload_pdf_to_s3(pdf_file, f"uploads/{email}/{pdf_file.name}")
+
+            if s3_url:
+                new_resource = UserResource.objects.create(
+                    useremail=email,
+                    title=title,
+                    pdf_url=s3_url
+                )
+                
+                return JsonResponse({
+                    "message": "Resource uploaded and saved!",
+                    "url": s3_url
+                }, status=201)
+            
+            return JsonResponse({"error": "Failed to upload to S3"}, status=500)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Only POST allowed"}, status=405)
+
+def get_user_resources(request):
+    # Get email from query parameters: /api/get-user-resources/?email=user@example.com
+    email = request.GET.get('email')
+    
+    if not email:
+        return JsonResponse({"error": "Email parameter is required"}, status=400)
+    
+    try:
+        # Filter resources by the provided email
+        resources = UserResource.objects.filter(useremail=email).values(
+            'id', 'title', 'pdf_url', 'uploaded_at'
+        ).order_by('-uploaded_at') 
+        
+        return JsonResponse({
+            "status": "success",
+            "data": list(resources)
+        }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
