@@ -45,8 +45,8 @@ const Dashboard = () => {
 
         const data = await res.json();
 
-        setUsername(data.name);
-        setUseremail(data.email);
+        setUsername(data?.name || localStorage.getItem("cyberguide_user_name") );
+        setUseremail(data?.email || localStorage.getItem("cyberguide_user_email") );
 
         if (data.email) {
           localStorage.setItem("cyberguide_user_email", data.email);

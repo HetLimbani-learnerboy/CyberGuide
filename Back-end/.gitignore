@@ -12,6 +12,7 @@ db.sqlite3
 media/
 /staticfiles/
 
+PDF
 
-client_secret_1098199530875-1rr9ccdmt810gqdgu5oeqd8pesh6f5or.apps.googleusercontent.com.json
+client.json
 

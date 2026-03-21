@@ -1,3 +1,4 @@
+import os
 from pyexpat import model
 import random
 import json
@@ -299,26 +300,24 @@ def resetpassword(request):
         return JsonResponse({"message": "User not found"}, status=404)
     
 
-@api_view(["POST"])
+@csrf_exempt 
 def gemini_chat(request):
-    prompt = request.data.get("prompt")
-    if not prompt or not prompt.strip():
-        return JsonResponse(
-            {"message": "Please enter a question for the AI mentor."},
-            status=400
-        )
-    try:
-        response_text = ask_gemini(prompt.strip())
-        if "AI is currently busy" in response_text:
-            return JsonResponse({"response": response_text}, status=429)
-
-        return JsonResponse({"response": response_text}, status=200)
-
-    except Exception as e:
-        return JsonResponse(
-            {"message": "Gemini connection error", "error": str(e)},
-            status=500
-        )
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_prompt = data.get("prompt")
+            
+            if not user_prompt:
+                return JsonResponse({"error": "No prompt provided"}, status=400)
+            
+            ai_response = ask_gemini(user_prompt)
+            
+            return JsonResponse({"response": ai_response})
+            
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+            
+    return JsonResponse({"error": "Only POST allowed"}, status=405)
         
      
 
@@ -471,3 +470,46 @@ def update_note(request, note_id):
 
     except Note.DoesNotExist:
         return Response({"error": "Note not found"}, status=404)
+    
+
+PDF_FOLDER = os.path.join(settings.BASE_DIR, "PDF", "Theory")
+LABPDF_FOLDER = os.path.join(settings.BASE_DIR, "PDF", "Lab")
+
+
+def get_files_from_folder(folder_path, url_prefix):
+    files = []
+
+    for file in sorted(os.listdir(folder_path), key=lambda x: x.lower()):
+        if file.lower().endswith(".pdf"):
+            files.append({
+                "name": file,
+                "url": f"{url_prefix}/{file}"
+            })
+
+    return files
+
+
+@api_view(['GET'])
+def get_pdfs(request):
+    if not os.path.exists(PDF_FOLDER):
+        return Response({"error": "Theory PDF folder not found"}, status=404)
+
+    files = get_files_from_folder(PDF_FOLDER, "/pdfs/theory")
+
+    return Response({
+        "status": "success",
+        "data": files
+    })
+
+
+@api_view(['GET'])
+def get_labpdfs(request):
+    if not os.path.exists(LABPDF_FOLDER):
+        return Response({"error": "Lab PDF folder not found"}, status=404)
+
+    files = get_files_from_folder(LABPDF_FOLDER, "/pdfs/lab")
+
+    return Response({
+        "status": "success",
+        "data": files
+    })

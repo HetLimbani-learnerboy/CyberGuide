@@ -1,28 +1,51 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown"; 
+import Slidebar from "./Slidebar";
 import "./ChatBoat.css";
 import chatbot from "../assets/chatbotimg.png";
 
 const ChatBot = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      sender: "bot",
-      text: "Hello! I am your CyberGuide AI Mentor. How can I help you today?",
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState(() => {
+    const savedChat = localStorage.getItem("cyberguide_chat");
+    return savedChat ? JSON.parse(savedChat) : [
+      {
+        sender: "bot",
+        text: "Hello! I am your CyberGuide AI Mentor. How can I help you today?",
+      },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cyberguide_chat", JSON.stringify(messages));
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (loading) scrollToBottom();
+  }, [loading]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, loading]);
+  const handleClearChat = () => {
+    if (window.confirm("Are you sure you want to clear the chat history?")) {
+      const initialMessage = [
+        {
+          sender: "bot",
+          text: "Hello! I am your CyberGuide AI Mentor. How can I help you today?",
+        },
+      ];
+      setMessages(initialMessage);
+      localStorage.removeItem("cyberguide_chat");
+    }
+  };
 
   const handleSend = async () => {
     if (!prompt.trim() || loading) return;
@@ -60,7 +83,7 @@ const ChatBot = () => {
       console.error(err);
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Connection failed. Ensure the Django server is running on port 8000." },
+        { sender: "bot", text: "Connection failed. Ensure the Django server is running." },
       ]);
     } finally {
       setLoading(false);
@@ -76,25 +99,36 @@ const ChatBot = () => {
 
   return (
     <div className="chatbot-wrapper">
+    <div className="chatbot-bg-animation">
+      <div className="circle-glow"></div>
+      <div className="grid-overlay"></div>
+    </div>
+
+    <Slidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+
+      <button
+        className="menu-toggle"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        ☰
+      </button>
+
       <div className="chatbot-container">
         <header className="chatbot-header">
-  <div className="header-left">
-    <img src={chatbot} alt="AI" className="chatbot-image" />
-    <div className="header-text">
-      <h2>Cyber<span>Guide</span> AI</h2>
-      <p className="status-indicator">● Online - Mentor Mode</p>
-    </div>
-  </div>
-  
-  <div className="header-actions">
-    <button className="back-button" onClick={() => navigate('/dashboard')}>
-      Back to Dashboard
-    </button>
-    <button className="clear-chat" onClick={() => setMessages([messages[0]])}>
-      Clear Chat
-    </button>
-  </div>
-</header>
+          <div className="header-left">
+            <img src={chatbot} alt="AI" className="chatbot-image" />
+            <div className="header-text">
+              <h2>Cyber<span>Guide</span> AI</h2>
+              <p className="status-indicator">● Online - Mentor Mode</p>
+            </div>
+          </div>
+          
+          <div className="header-actions">
+            <button className="clear-chat" onClick={handleClearChat}>
+              Clear Chat
+            </button>
+          </div>
+        </header>
 
         <div className="chatbot-history">
           {messages.map((msg, index) => (
