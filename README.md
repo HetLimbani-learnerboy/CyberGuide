@@ -108,6 +108,10 @@ CyberGuide/
 │   │   ├── consumer.py                # WebSocket consumer (real-time terminal)
 │   │   └── views.py                   # Terminal-related APIs
 │   │
+│   ├── PDF/                           # Make This Folder
+│   │   ├── Lab/                       # Add PDF File Yourself  
+│   │   ├── Theory/                    # Add PDF File Yourself
+│   │
 │   ├── manage.py                      # Django CLI entry point
 │   └── requirements.txt               # Backend dependencies
 │
@@ -145,21 +149,37 @@ CyberGuide/
 
 ### 🔹 1. Backend Setup
 
-Navigate to Backend:
+Navigate to backend folder:
 
 ```bash
 cd Backend
 ```
 
-Create `.env` file:
+Create a `.env` file:
 
 ```env
-GEMINI_API_KEY=your_gemini_key
-AWS_ACCESS_KEY_ID=your_aws_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret
+# Email Configuration
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your_email@gmail.com
+EMAIL_HOST_PASSWORD=your_app_password
+
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_STORAGE_BUCKET_NAME=your_bucket_name
 AWS_S3_REGION_NAME=your_region
-DATABASE_URL=your_neon_postgres_url
+
+# Django Config
+SECRET_KEY=your_secret_key
+
+# Database (Neon PostgreSQL)
+DATABASE_URL=your_neon_database_url
+
+# Gemini AI
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 Install dependencies:
@@ -171,10 +191,11 @@ pip install -r requirements.txt
 Run migrations:
 
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 
-Start server:
+Start backend server:
 
 ```bash
 python manage.py runserver
@@ -184,19 +205,49 @@ python manage.py runserver
 
 ### 🔹 2. Frontend Setup
 
+Navigate to frontend folder:
+
 ```bash
 cd Frontend
+```
+
+Create a `.env` file:
+
+```env
+VITE_NEWS_API_KEY=your_api_key_here
+VITE_BACKEND_URL=http://127.0.0.1:8000
+```
+
+Install dependencies:
+
+```bash
 npm install
-npm start
+```
+
+Run frontend:
+
+```bash
+npm run dev
 ```
 
 ---
 
 ### 🔹 3. Docker Setup
 
+From root directory:
+
 ```bash
 docker-compose up --build
 ```
+
+---
+
+## ⚠️ Notes
+
+* Use **App Password** for Gmail SMTP (not your real password)
+* Ensure `.env` is added to `.gitignore`
+* Make sure PostgreSQL (Neon) URL is correct
+* AWS S3 bucket must allow required access permissions
 
 ---
 
@@ -250,18 +301,6 @@ If a **429 rate limit error** occurs, the system automatically switches models.
 
 **Het Limbani**
 CSE (AI & ML) Student & Full-Stack Developer
-
----
-
-## ⭐ Future Improvements
-
-* User authentication with JWT
-* File preview (PDF viewer)
-* Admin dashboard
-* AI chat history storage
-* Real-time notifications
-
----
 
 ## 📌 License
 
