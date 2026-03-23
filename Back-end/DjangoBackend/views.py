@@ -428,68 +428,53 @@ def gemini_chat(request):
             
     return JsonResponse({"error": "Only POST allowed"}, status=405)
         
-     
 
-# def current_user(request):
-
-#     print("Request user:", request.user)
-#     print("Authenticated:", request.user.is_authenticated)
-
-    # Case 1: Authenticated user
-    # if request.user.is_authenticated:
-    #     email = request.user.email
-
-    #     try:
-    #         profile = Profile.objects.get(useremail=email)
-
-    #         return JsonResponse({
-    #             "name": profile.name,
-    #             "email": profile.useremail,
-    #             "status": "login_success"
-    #         })
-
-    #     except Profile.DoesNotExist:
-    #         return JsonResponse({
-    #             "name": request.user.first_name or request.user.username,
-    #             "email": email,
-    #             "status": "profile_not_found"
-    #         })
-    # email= request.user.email
-    # profile=Profile.objects.get(useremail=email)
-    # return JsonResponse({
-    #     "name": profile.name,
-    #     "email": profile.useremail,
-    #     "message": "User is authenticated",
-    #     # "status": "not_authenticated"
-    # })
-
+from django.http import JsonResponse
+from django.contrib.auth import logout 
+from .models import Profile
 
 CURRENT_NAME = None
 CURRENT_EMAIL = None
 
 def current_user(request):
     global CURRENT_NAME, CURRENT_EMAIL
+    user = request.user
 
-    email = request.user.email
-    profile = Profile.objects.get(useremail=email)
+    email = getattr(user, "email", None)
+    username = getattr(user, "username", None)
+
+    if not user.is_authenticated:
+        return JsonResponse({
+            "name": None,
+            "email": None,
+            "message": "User not logged in"
+        }, status=200)
+
+    profile, _ = Profile.objects.get_or_create(
+        user=user,
+        defaults={
+            "useremail": email,
+            "name": username or "User"
+        }
+    )
 
     CURRENT_NAME = profile.name
     CURRENT_EMAIL = profile.useremail
 
     return JsonResponse({
-        "name": CURRENT_NAME,
-        "email": CURRENT_EMAIL,
+        "name": profile.name,
+        "email": profile.useremail,
         "message": "User is authenticated"
     })
-    
+
 def getuserdata(request):
     global CURRENT_NAME, CURRENT_EMAIL
-
+    
     return JsonResponse({
         "name": CURRENT_NAME,
         "email": CURRENT_EMAIL
-    })   
-
+    })
+        
 def logout_view(request):
     global CURRENT_NAME, CURRENT_EMAIL
 
@@ -502,7 +487,7 @@ def logout_view(request):
         "message": "Logged out successfully"
     })
 
-
+    
 @api_view(['GET'])
 def get_notes(request, email):
     notes = Note.objects.filter(email=email).order_by('-created_at')
