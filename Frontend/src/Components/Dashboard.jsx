@@ -36,36 +36,36 @@ const Dashboard = () => {
 
 
   useEffect(() => {
+    const storedName = localStorage.getItem("cyberguide_user_name");
+    const storedEmail = localStorage.getItem("cyberguide_user_email");
+
+    if (storedName) setUsername(storedName);
+    if (storedEmail) setUseremail(storedEmail);
 
     const fetchUserData = async () => {
-  try {
-    const res = await fetch(`${BACKEND_URL}/auth/getuserdata/`, {
-      credentials: "include"
-    });
+      try {
+        const res = await fetch(`${BACKEND_URL}/auth/getuserdata/`, {
+          credentials: "include"
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    const finalName = data.name || localStorage.getItem("cyberguide_user_name");
-    const finalEmail = data.email || localStorage.getItem("cyberguide_user_email");
+        const finalName = data?.name || storedName;
+        const finalEmail = data?.email || storedEmail;
 
-    setUsername(finalName);
-    setUseremail(finalEmail);
+        setUsername(finalName);
+        setUseremail(finalEmail);
 
-    if (data.email && data.name) {
-      localStorage.setItem("cyberguide_user_email", data.email);
-      localStorage.setItem("cyberguide_user_name", data.name);
-    } else if (data.message === "Logged out successfully" || data.name === null) {
-      
-      localStorage.removeItem("cyberguide_user_email");
-      localStorage.removeItem("cyberguide_user_name");
-    }
-
-  } catch (error) {
-    console.error("User fetch error:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+        if (data?.email && data?.name) {
+          localStorage.setItem("cyberguide_user_email", data.email);
+          localStorage.setItem("cyberguide_user_name", data.name);
+        }
+      } catch (error) {
+        console.error("User fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     const fetchNews = async () => {
       try {

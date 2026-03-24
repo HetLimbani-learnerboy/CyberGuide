@@ -83,7 +83,7 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!isPasswordAllValid) {
-      alert("Please follow password rules and confirm password correctly.");
+      alert("Please follow password rules.");
       return;
     }
 
@@ -95,7 +95,7 @@ const SignUp = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name.trim(),
-          email: formData.email.trim(),
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
         }),
       });
@@ -104,27 +104,28 @@ const SignUp = () => {
 
       if (!signupRes.ok) {
         alert(signupData.message || "Signup Failed");
+        setLoading(false);
         return;
       }
 
       const otpRes = await fetch(`${API_URL}/send-otp/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email.trim() }),
+        body: JSON.stringify({ email: formData.email.trim().toLowerCase() }),
       });
 
       const otpData = await safeJson(otpRes);
 
       if (!otpRes.ok) {
-        alert(otpData.message || otpData.error || "OTP sending failed");
+        alert(otpData.message || "Account created, but failed to send OTP. Please try logging in to resend.");
         return;
       }
 
-      alert("OTP sent to your email ");
+      alert("Security code dispatched to your email.");
       setStep(2);
     } catch (err) {
-      console.log(err);
-      alert("Server error. Please try again.");
+      console.error(err);
+      alert("Connection error. Check if backend is running.");
     } finally {
       setLoading(false);
     }
@@ -145,7 +146,7 @@ const SignUp = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email.trim(),
+          email: formData.email.trim().toLowerCase(),
           otp: otp.trim(),
         }),
       });
@@ -153,18 +154,21 @@ const SignUp = () => {
       const verifyData = await safeJson(verifyRes);
 
       if (!verifyRes.ok) {
-        alert(verifyData.message || verifyData.error || "OTP Verification Failed");
+        alert(verifyData.message || "OTP Verification Failed");
         return;
       }
-
-      alert("OTP Verified Successfully");
-      localStorage.setItem("cyberguide_user_email", formData.email.trim());
+      localStorage.setItem("cyberguide_user_email", formData.email.trim().toLowerCase());
       localStorage.setItem("cyberguide_user_name", formData.name.trim());
 
-      navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 100);
+      alert("OTP Verified Successfully. Access Granted.");
+
+
     } catch (err) {
-      console.log(err);
-      alert("Server error. Please try again.");
+      console.error("Verification Error:", err);
+      alert("Server connection failed.");
     } finally {
       setLoading(false);
     }

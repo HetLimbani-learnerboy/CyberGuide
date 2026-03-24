@@ -140,6 +140,8 @@ def get_feedbacks(request):
         "data": data
     })
 
+from .models import Profile # Ensure Profile is imported
+
 @api_view(["POST"])
 def signup(request):
     name = request.data.get("name")
@@ -154,12 +156,17 @@ def signup(request):
 
     try:
         with transaction.atomic():
-            # create_user hashes the password using PBKDF2 + SHA256
             user = User.objects.create_user(
-                username=email,
-                email=email,
+                username=email.lower(), 
+                email=email.lower(),
                 password=password,
                 first_name=name,    
+            )
+        # Create the profile immediately
+            Profile.objects.create(
+                user=user,
+                useremail=email.lower(),
+                name=name
             )
         return JsonResponse({"message": "Account created successfully"}, status=201)
     except Exception as e:
